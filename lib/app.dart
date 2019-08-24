@@ -5,11 +5,14 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Kyouen VS',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: HomePage(title: 'Kyouen VS'),
+      initialRoute: HomePage.routeName,
+      routes: {
+        HomePage.routeName: (context) => HomePage(),
+      },
     );
   }
 }

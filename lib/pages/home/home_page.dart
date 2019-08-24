@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  static const routeName = '/';
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Home"),
       ),
       body: Center(
         child: Column(
