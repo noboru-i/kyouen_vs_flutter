@@ -24,7 +24,7 @@ linter:
     # DOCUMENTATION
     - slash_for_doc_comments
     - package_api_docs # prefer
-    - public_member_api_docs # prefer
+    # - public_member_api_docs # prefer
     - comment_references
     # USAGE
     - avoid_relative_lib_imports # prefer
