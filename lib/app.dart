@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/pages/home/home_page.dart';
+import 'package:kyouen_vs_flutter/pages/room_list/room_list_page.dart';
 
 class App extends StatelessWidget {
   @override
@@ -12,6 +13,7 @@ class App extends StatelessWidget {
       initialRoute: HomePage.routeName,
       routes: {
         HomePage.routeName: (context) => HomePage(),
+        RoomListPage.routeName: (context) => RoomListPage(),
       },
     );
   }
