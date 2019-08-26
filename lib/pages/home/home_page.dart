@@ -2,14 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   static const routeName = '/';
 
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +22,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             RaisedButton(
-              onPressed: _moveToRoomList,
+              onPressed: () => _moveToRoomList(context),
               child: Text(
                 'Move to room list',
               ),
@@ -48,7 +43,7 @@ class _HomePageState extends State<HomePage> {
     return result.user;
   }
 
-  void _moveToRoomList() async {
+  void _moveToRoomList(BuildContext context) async {
     Navigator.pushNamed(context, RoomListPage.routeName);
   }
 }

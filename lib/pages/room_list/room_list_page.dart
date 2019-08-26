@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:kyouen_vs_flutter/blocs/room_bloc.dart';
+import 'package:kyouen_vs_flutter/entities/room.dart';
+import 'package:provider/provider.dart';
 
-class RoomListPage extends StatefulWidget {
+class RoomListPage extends StatelessWidget {
   static const routeName = '/room_list';
-
-  @override
-  _RoomListPageState createState() => _RoomListPageState();
-}
-
-class _RoomListPageState extends State<RoomListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,17 +14,18 @@ class _RoomListPageState extends State<RoomListPage> {
       ),
       body: RoomListWidget(),
       floatingActionButton: FloatingActionButton(
-        onPressed: _createRoom,
+        onPressed: () => _createRoom(context),
         child: Icon(Icons.add),
       ),
     );
   }
 
-  void _createRoom() async {
-    await Firestore.instance.collection('rooms').document().setData({
-      'title': 'foo',
-      'author': 'bar',
-    });
+  void _createRoom(BuildContext context) async {
+    final bloc = Provider.of<RoomBloc>(context);
+    bloc.addRoom.add(Room(
+      createdAt: DateTime.now(),
+      numberOfPlayer: 0,
+    ));
   }
 }
 
@@ -49,8 +47,8 @@ class RoomListWidget extends StatelessWidget {
               children:
                   snapshot.data.documents.map((DocumentSnapshot document) {
                 return ListTile(
-                  title: Text(document['title']),
-                  subtitle: Text(document['author']),
+                  title: Text(document['title'] ?? 'no title'),
+                  subtitle: Text(document['author'] ?? 'no auther'),
                 );
               }).toList(),
             );
