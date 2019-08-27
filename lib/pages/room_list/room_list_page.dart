@@ -43,14 +43,14 @@ class RoomListWidget extends StatelessWidget {
           case ConnectionState.waiting:
             return const Text('Loading...');
           default:
-            return ListView(
-              children:
-                  snapshot.data.documents.map((DocumentSnapshot document) {
+            return ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                final room = Room.fromMap(snapshot.data.documents[index].data);
                 return ListTile(
-                  title: Text(document['title'] ?? 'no title'),
-                  subtitle: Text(document['author'] ?? 'no auther'),
+                  title: Text(room.createdAt?.toIso8601String() ?? 'no data'),
                 );
-              }).toList(),
+              },
+              itemCount: snapshot.data.documents.length,
             );
         }
       },
