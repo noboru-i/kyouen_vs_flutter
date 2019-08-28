@@ -15,6 +15,12 @@ class RoomRepository {
 
   // TODO change return value to exclude Firestore dependency.
   Stream<QuerySnapshot> snapshots() {
-    return Firestore.instance.collection('rooms').snapshots();
+    return Firestore.instance
+        .collection('rooms')
+        .orderBy(
+          'created_at',
+          descending: true,
+        )
+        .snapshots();
   }
 }
