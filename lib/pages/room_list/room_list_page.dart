@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/blocs/room_bloc.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
+import 'package:kyouen_vs_flutter/pages/room_list/room_list_item.dart';
 import 'package:provider/provider.dart';
 
 class RoomListPage extends StatelessWidget {
@@ -47,9 +48,7 @@ class RoomListWidget extends StatelessWidget {
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 final room = Room.fromMap(snapshot.data.documents[index].data);
-                return ListTile(
-                  title: Text(room.createdAt?.toIso8601String() ?? 'no data'),
-                );
+                return RoomListItem(room: room);
               },
               itemCount: snapshot.data.documents.length,
             );
