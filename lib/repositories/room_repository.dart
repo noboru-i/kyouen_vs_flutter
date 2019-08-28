@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
 
@@ -9,5 +11,10 @@ class RoomRepository {
         .collection('rooms')
         .document()
         .setData(room.toMap());
+  }
+
+  // TODO change return value to exclude Firestore dependency.
+  Stream<QuerySnapshot> snapshots() {
+    return Firestore.instance.collection('rooms').snapshots();
   }
 }

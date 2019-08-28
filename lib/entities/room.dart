@@ -1,10 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
-class Room {
+@immutable
+class Room extends Equatable {
   final DateTime createdAt;
   final int numberOfPlayer;
 
-  Room({this.createdAt, this.numberOfPlayer});
+  Room({
+    this.createdAt,
+    this.numberOfPlayer,
+  }) : super([createdAt, numberOfPlayer]);
 
   Room.fromMap(Map<String, dynamic> source)
       : createdAt = (source['created_at'] as Timestamp).toDate(),

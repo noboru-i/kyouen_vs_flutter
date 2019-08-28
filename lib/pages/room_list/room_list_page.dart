@@ -32,8 +32,9 @@ class RoomListPage extends StatelessWidget {
 class RoomListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final bloc = Provider.of<RoomBloc>(context);
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('rooms').snapshots(),
+      stream: bloc.roomList,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
