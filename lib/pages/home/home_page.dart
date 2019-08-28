@@ -1,14 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kyouen_vs_flutter/pages/room_list/room_list_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   static const routeName = '/';
 
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +21,12 @@ class _HomePageState extends State<HomePage> {
                 'Sign in anonymously',
               ),
             ),
+            RaisedButton(
+              onPressed: () => _moveToRoomList(context),
+              child: Text(
+                'Move to room list',
+              ),
+            ),
           ],
         ),
       ),
@@ -39,5 +41,9 @@ class _HomePageState extends State<HomePage> {
     print("signed in ${result.user.uid}");
 
     return result.user;
+  }
+
+  void _moveToRoomList(BuildContext context) async {
+    Navigator.pushNamed(context, RoomListPage.routeName);
   }
 }
