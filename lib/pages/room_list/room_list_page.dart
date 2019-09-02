@@ -28,6 +28,7 @@ class RoomListPage extends StatelessWidget {
     bloc.addRoom.add(Room(
       createdAt: DateTime.now(),
       numberOfPlayer: 0,
+      size: 6,
     ));
   }
 }
@@ -49,10 +50,11 @@ class RoomListWidget extends StatelessWidget {
           default:
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
-                final room = Room.fromMap(snapshot.data.documents[index].data);
+                final document = snapshot.data.documents[index];
+                final room = Room.fromMap(document.data);
                 return RoomListItem(
                   room: room,
-                  onTap: () => _onTapItem(context, room),
+                  onTap: () => _onTapItem(context, document.documentID),
                 );
               },
               itemCount: snapshot.data.documents.length,
@@ -62,11 +64,11 @@ class RoomListWidget extends StatelessWidget {
     );
   }
 
-  void _onTapItem(BuildContext context, Room room) {
+  void _onTapItem(BuildContext context, String roomId) {
     Navigator.pushNamed(
       context,
       KyouenPage.routeName,
-      arguments: KyouenPageArguments(room),
+      arguments: KyouenPageArguments(roomId),
     );
   }
 }

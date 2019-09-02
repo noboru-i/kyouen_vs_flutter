@@ -23,4 +23,14 @@ class RoomRepository {
         )
         .snapshots();
   }
+
+  Stream<Room> fetch(String roomId) {
+    return Firestore.instance
+        .collection('rooms')
+        .document(roomId)
+        .snapshots()
+        .asyncMap((snapshot) {
+      return Room.fromMap(snapshot.data);
+    });
+  }
 }
