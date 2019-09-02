@@ -86,7 +86,7 @@ commands:
       - run:
           name: Sign ipa
           command: bundle exec fastlane sign_ipa
-          working_directory: $CIRCLE_WORKING_DIRECTORY/ios
+          working_directory: ~/project/ios
 
 jobs:
   build_android:
