@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/blocs/room_bloc.dart';
 import 'package:kyouen_vs_flutter/pages/home/home_page.dart';
+import 'package:kyouen_vs_flutter/pages/kyouen/kyouen_page.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_page.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,7 @@ class App extends StatelessWidget {
         routes: {
           HomePage.routeName: (context) => HomePage(),
           RoomListPage.routeName: (context) => RoomListPage(),
+          KyouenPage.routeName: (context) => KyouenPage(),
         },
       ),
     );

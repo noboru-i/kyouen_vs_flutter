@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/blocs/room_bloc.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
+import 'package:kyouen_vs_flutter/pages/kyouen/kyouen_page.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_item.dart';
 import 'package:provider/provider.dart';
 
 class RoomListPage extends StatelessWidget {
   static const routeName = '/room_list';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +28,7 @@ class RoomListPage extends StatelessWidget {
     bloc.addRoom.add(Room(
       createdAt: DateTime.now(),
       numberOfPlayer: 0,
+      size: 6,
     ));
   }
 }
@@ -47,13 +50,25 @@ class RoomListWidget extends StatelessWidget {
           default:
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
-                final room = Room.fromMap(snapshot.data.documents[index].data);
-                return RoomListItem(room: room);
+                final document = snapshot.data.documents[index];
+                final room = Room.fromMap(document.data);
+                return RoomListItem(
+                  room: room,
+                  onTap: () => _onTapItem(context, document.documentID),
+                );
               },
               itemCount: snapshot.data.documents.length,
             );
         }
       },
+    );
+  }
+
+  void _onTapItem(BuildContext context, String roomId) {
+    Navigator.pushNamed(
+      context,
+      KyouenPage.routeName,
+      arguments: KyouenPageArguments(roomId),
     );
   }
 }
