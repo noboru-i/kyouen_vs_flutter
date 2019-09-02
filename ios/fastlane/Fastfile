@@ -1,6 +1,8 @@
 default_platform(:ios)
 
 TEAM_ID = '56W5SXE4HE'
+BUNDLE_ID = 'hm.orz.chaos114.kyouenVsFlutter.dev'
+
 PROVISIONING_PROFILE_NAME_DEV = 'wildcard provisioning'
 
 platform :ios do
