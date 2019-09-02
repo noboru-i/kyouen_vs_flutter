@@ -17,6 +17,15 @@ executors:
       xcode: "10.3.0"
 
 commands:
+  decrypt_files:
+    steps:
+      - run:
+          name: Decrypt android files
+          command: openssl aes-256-cbc -k $DECRYPT_KEY -d -in android/app/google-services.encrypted.json -out android/app/google-services.json -md sha256
+      - run:
+          name: Decrypt ios files
+          command: openssl aes-256-cbc -k $DECRYPT_KEY -d -in ios/Runner/GoogleService-Info.encrypted.plist -out ios/Runner/GoogleService-Info.plist -md sha256
+
   flutter_analyze:
     steps:
       # TODO maybe we can use result to "Danger".
@@ -83,6 +92,7 @@ jobs:
     executor: default_android
     steps:
       - checkout
+      - decrypt_files
       # - flutter_analyze
       - build_apk
       - deploy_to_deploygate
@@ -90,6 +100,7 @@ jobs:
     executor: default_ios
     steps:
       - checkout
+      - decrypt_files
       - install_flutter
       # - flutter_analyze
       # TODO below commands are used for deploy
