@@ -1,0 +1,104 @@
+version: 2.1
+executors:
+  default_android:
+    shell: /bin/bash --login -eo pipefail
+    environment:
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+    docker:
+      - image: cirrusci/flutter:latest
+  default_ios:
+    shell: /bin/bash --login -eo pipefail
+    environment:
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+    macos:
+      # https://circleci.com/docs/2.0/testing-ios/#supported-xcode-versions
+      xcode: "10.3.0"
+
+commands:
+  flutter_analyze:
+    steps:
+      # TODO maybe we can use result to "Danger".
+      - run:
+          name: Run flutter analyze
+          command: $FLUTTER_HOME/bin/flutter analyze
+  build_apk:
+    steps:
+      - run:
+          name: Build apk
+          command: $FLUTTER_HOME/bin/flutter build apk --release
+  deploy_to_deploygate:
+    steps:
+      - run:
+          name: Deploy to DeployGate
+          command: |
+            DEPLOYGATE_MESSAGE="branch: $CIRCLE_BRANCH, hash: `git rev-parse --short HEAD`"
+            curl \
+              -F "token=${DEPLOYGATE_API_TOKEN}" \
+              -F "file=@build/app/outputs/apk/release/app-release.apk" \
+              -F "message=${DEPLOYGATE_MESSAGE}" \
+              https://deploygate.com/api/users/${DEPLOYGATE_USER_NAME}/apps
+
+  install_flutter:
+    steps:
+      - run:
+          name: Install flutter SDK
+          command: mkdir -p ~/sdks/flutter && git clone -b stable https://github.com/flutter/flutter.git ~/sdks/flutter
+      - run:
+          name: Set flutter SDK PATH in bash
+          command: echo 'export FLUTTER_HOME=~/sdks/flutter' >> $BASH_ENV && source $BASH_ENV
+      - run:
+          name: Try doctor
+          command: $FLUTTER_HOME/bin/flutter doctor
+
+  setup_fastlane:
+    steps:
+      - run:
+          name: Set ruby version
+          command: echo "ruby-2.6.3" > ~/.ruby-version
+      - run:
+          name: Run bundle install
+          command: bundle install --path vendor/bundle
+      # TODO store and restore `vendor/bundle` cache
+
+  setup_ios_build_setting:
+    steps:
+      - run:
+          name: Run pod setup
+          command: curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+          working_directory: $CIRCLE_WORKING_DIRECTORY/ios
+
+  build_ipa:
+    steps:
+      - run:
+          name: Build flutter app
+          command: $FLUTTER_HOME/bin/flutter build ios --release --no-codesign
+      - run:
+          name: Sign ipa
+          command: bundle exec fastlane sign_ipa
+
+jobs:
+  build_android:
+    executor: default_android
+    steps:
+      - checkout
+      # - flutter_analyze
+      - build_apk
+      - deploy_to_deploygate
+  build_ios:
+    executor: default_ios
+    steps:
+      - checkout
+      - install_flutter
+      # - flutter_analyze
+      # TODO below commands are used for deploy
+      - setup_fastlane
+      - setup_ios_build_setting
+      - build_ipa
+
+workflows:
+  build:
+    jobs:
+      - build_android
+      - build_ios

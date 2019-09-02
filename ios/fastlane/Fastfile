@@ -1,0 +1,45 @@
+default_platform(:ios)
+
+TEAM_ID = '56W5SXE4HE'
+PROVISIONING_PROFILE_NAME_DEV = 'wildcard provisioning'
+
+platform :ios do
+  before_all do
+    setup_circle_ci
+  end
+
+  desc "Sign app to ipa"
+  lane :sign_ipa do |options|
+    setup_provisioning_profiles
+
+    build_app(
+      scheme: 'Development',
+      export_method: 'ad-hoc',
+      export_options: {
+        provisioningProfiles: {
+          BUNDLE_ID => PROVISIONING_PROFILE_NAME_DEV
+        }
+      },
+      xcargs: "DEVELOPMENT_TEAM='#{TEAM_ID}' PROVISIONING_PROFILE_SPECIFIER='#{PROVISIONING_PROFILE_NAME_DEV}'"
+    )
+  end
+
+  desc "Install Code Signing Credentials"
+  private_lane :setup_provisioning_profiles do |options|
+    next unless Helper.ci?
+
+    `curl -OL https://developer.apple.com/certificationauthority/AppleWWDRCA.cer`
+    import_certificate(
+      keychain_name: 'fastlane_tmp_keychain',
+      certificate_path: 'fastlane/cert/dist.p12',
+      certificate_password: ENV['IOS_CERTIFICATES_KEY_PASSWORD'])
+    import_certificate(
+      keychain_name: 'fastlane_tmp_keychain',
+      certificate_path: 'fastlane/AppleWWDRCA.cer')
+
+    Dir.glob('cert/*.mobileprovision').each {|filename|
+      puts filename
+      FastlaneCore::ProvisioningProfile.install(filename)
+    }
+  end
+end
