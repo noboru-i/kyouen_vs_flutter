@@ -14,6 +14,7 @@ platform :ios do
   lane :sign_ipa do |options|
     setup_provisioning_profiles
 
+    disable_automatic_code_signing
     build_app(
       # TODO create dev / prod scheme
       scheme: 'Runner',
