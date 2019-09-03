@@ -76,7 +76,7 @@ commands:
       - run:
           name: Run pod setup
           command: curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
-          working_directory: $CIRCLE_WORKING_DIRECTORY/ios
+          working_directory: ~/project/ios
 
   build_ipa:
     steps:

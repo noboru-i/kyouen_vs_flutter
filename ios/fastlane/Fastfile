@@ -15,14 +15,20 @@ platform :ios do
     setup_provisioning_profiles
 
     build_app(
-      scheme: 'Development',
+      # TODO create dev / prod scheme
+      scheme: 'Runner',
       export_method: 'ad-hoc',
       export_options: {
         provisioningProfiles: {
           BUNDLE_ID => PROVISIONING_PROFILE_NAME_DEV
         }
       },
-      xcargs: "DEVELOPMENT_TEAM='#{TEAM_ID}' PROVISIONING_PROFILE_SPECIFIER='#{PROVISIONING_PROFILE_NAME_DEV}'"
+      xcargs: "DEVELOPMENT_TEAM='#{TEAM_ID}' PROVISIONING_PROFILE_SPECIFIER='#{PROVISIONING_PROFILE_NAME_DEV}' CODE_SIGN_IDENTITY='iPhone Distribution'"
+    )
+
+    deploygate(
+      user: ENV['DEPLOYGATE_USER_NAME'],
+      message: "Build by #{lane_context[SharedValues::BUILD_NUMBER]}",
     )
   end
 
