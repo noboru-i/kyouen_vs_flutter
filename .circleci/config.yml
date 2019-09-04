@@ -31,7 +31,7 @@ commands:
       # TODO maybe we can use result to "Danger".
       - run:
           name: Run flutter analyze
-          command: $FLUTTER_HOME/bin/flutter analyze > flutter_analyze_report.txt
+          command: $FLUTTER_HOME/bin/flutter analyze > flutter_analyze_report.txt || true
 
   exec_danger:
     steps:
