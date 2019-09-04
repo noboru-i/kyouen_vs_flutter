@@ -32,6 +32,8 @@ commands:
       - run:
           name: Run flutter analyze
           command: $FLUTTER_HOME/bin/flutter analyze > flutter_analyze_report.txt || true
+      - store_artifacts:
+          path: flutter_analyze_report.txt
 
   exec_danger:
     steps:
