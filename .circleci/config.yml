@@ -112,5 +112,11 @@ jobs:
 workflows:
   build:
     jobs:
-      - build_android
-      - build_ios
+      - build_android:
+          filters:
+            branches:
+              only: master
+      - build_ios:
+          filters:
+            branches:
+              only: master
