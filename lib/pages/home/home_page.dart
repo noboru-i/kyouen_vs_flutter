@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_page.dart';
 
 class HomePage extends StatelessWidget {
-  static const routeName = '/';
+  static const String routeName = '/';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        title: const Text('Home'),
       ),
       body: Center(
         child: Column(
@@ -17,13 +17,13 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             RaisedButton(
               onPressed: _signIn,
-              child: Text(
+              child: const Text(
                 'Sign in anonymously',
               ),
             ),
             RaisedButton(
               onPressed: () => _moveToRoomList(context),
-              child: Text(
+              child: const Text(
                 'Move to room list',
               ),
             ),
@@ -34,16 +34,16 @@ class HomePage extends StatelessWidget {
   }
 
   Future<FirebaseUser> _signIn() async {
-    final _auth = FirebaseAuth.instance;
-    // TODO Sign in with Twitter is crashed. So temporally login anonymously.
-    final result = await _auth.signInAnonymously();
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    // TODO(noboru-i): Sign in with Twitter is crashed. So temporally login anonymously.
+    final AuthResult result = await _auth.signInAnonymously();
 
-    print("signed in ${result.user.uid}");
+    print('signed in ${result.user.uid}');
 
     return result.user;
   }
 
-  void _moveToRoomList(BuildContext context) async {
+  void _moveToRoomList(BuildContext context) {
     Navigator.pushNamed(context, RoomListPage.routeName);
   }
 }

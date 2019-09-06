@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
 
 class StoneView extends StatelessWidget {
-  final StoneState state;
-  final GestureTapCallback onTap;
-
-  StoneView({
+  const StoneView({
     @required this.state,
     @required this.onTap,
   });
 
+  final StoneState state;
+  final GestureTapCallback onTap;
+
   @override
   Widget build(BuildContext context) {
     if (state == StoneState.none) {
-      return _StoneBackgroundView();
+      return const _StoneBackgroundView();
     }
 
-    final isBlack = state == StoneState.black;
+    final bool isBlack = state == StoneState.black;
     return ClipOval(
       child: Material(
         color: isBlack ? Colors.black87 : Colors.white, // button color
@@ -45,7 +45,7 @@ class _StoneBackgroundView extends StatelessWidget {
 class _StoneBackgroundViewPaint extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
+    final Paint paint = Paint()
       ..color = Colors.black45
       ..strokeWidth = 2;
     canvas.drawLine(
