@@ -56,6 +56,13 @@ class Point extends Equatable {
 
   final int x;
   final int y;
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'x': x,
+      'y': y,
+    };
+  }
 }
 
 enum StoneState {

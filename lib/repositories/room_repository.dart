@@ -33,4 +33,17 @@ class RoomRepository {
       return Room.fromMap(snapshot.data);
     });
   }
+
+  void putStone(String roomId, Point point) {
+    final map = point.toMap()
+      ..addAll(<String, dynamic>{
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+    Firestore.instance
+        .collection('rooms')
+        .document(roomId)
+        .collection('points')
+        .add(map);
+  }
 }

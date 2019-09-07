@@ -69,7 +69,7 @@ class _KyouenView extends StatelessWidget {
             final StoneState state = room.stage[index];
             return StoneView(
               state: state,
-              onTap: () => _onTapStone(index),
+              onTap: () => _onTapStone(context, index),
             );
           },
         ),
@@ -77,5 +77,14 @@ class _KyouenView extends StatelessWidget {
     );
   }
 
-  void _onTapStone(int index) {}
+  void _onTapStone(BuildContext context, int index) {
+    final int x = index % room.size;
+    final int y = index ~/ room.size;
+    final KyouenBloc bloc = Provider.of<KyouenBloc>(context);
+
+    bloc.putStone.add(Point(
+      x: x,
+      y: y,
+    ));
+  }
 }
