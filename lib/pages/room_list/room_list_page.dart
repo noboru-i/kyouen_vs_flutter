@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/blocs/room_bloc.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
@@ -37,9 +36,9 @@ class RoomListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final RoomBloc bloc = Provider.of<RoomBloc>(context);
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<List<Room>>(
       stream: bloc.roomList,
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<Room>> snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
@@ -50,15 +49,13 @@ class RoomListWidget extends StatelessWidget {
           default:
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
-                final DocumentSnapshot document =
-                    snapshot.data.documents[index];
-                final Room room = Room.fromMap(document.data);
+                final Room room = snapshot.data[index];
                 return RoomListItem(
                   room: room,
-                  onTap: () => _onTapItem(context, document.documentID),
+                  onTap: () => _onTapItem(context, room.id),
                 );
               },
-              itemCount: snapshot.data.documents.length,
+              itemCount: snapshot.data.length,
             );
         }
       },

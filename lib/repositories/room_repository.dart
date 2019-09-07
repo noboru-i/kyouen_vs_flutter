@@ -13,24 +13,28 @@ class RoomRepository {
         .setData(room.toMap());
   }
 
-  // TODO(noboru-i): change return value to exclude Firestore dependency.
-  Stream<QuerySnapshot> snapshots() {
-    return Firestore.instance
-        .collection('rooms')
-        .orderBy(
-          'created_at',
-          descending: true,
-        )
-        .snapshots();
-  }
-
   Stream<Room> fetch(String roomId) {
     return Firestore.instance
         .collection('rooms')
         .document(roomId)
         .snapshots()
         .asyncMap((DocumentSnapshot snapshot) {
-      return Room.fromMap(snapshot.data);
+      return Room.fromMap(snapshot.documentID, snapshot.data);
+    });
+  }
+
+  Stream<List<Room>> fetchRooms() {
+    return Firestore.instance
+        .collection('rooms')
+        .orderBy(
+          'created_at',
+          descending: true,
+        )
+        .snapshots()
+        .asyncMap((QuerySnapshot snapshot) {
+      return snapshot.documents.map((DocumentSnapshot doc) {
+        return Room.fromMap(doc.documentID, doc.data);
+      }).toList();
     });
   }
 
@@ -48,7 +52,7 @@ class RoomRepository {
   }
 
   void putStone(String roomId, Point point) {
-    final map = point.toMap()
+    final Map<String, dynamic> map = point.toMap()
       ..addAll(<String, dynamic>{
         'createdAt': FieldValue.serverTimestamp(),
       });
