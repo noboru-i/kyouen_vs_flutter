@@ -4,12 +4,12 @@ import 'package:meta/meta.dart';
 
 @immutable
 class Room extends Equatable {
-  Room({
+  const Room({
     this.createdAt,
     this.numberOfPlayer,
     this.size,
     this.points,
-  }) : super(<dynamic>[createdAt, numberOfPlayer, size, points]);
+  });
 
   Room.fromMap(Map<String, dynamic> source)
       : createdAt = (source['created_at'] is Timestamp)
@@ -45,6 +45,9 @@ class Room extends Equatable {
     }
     return list;
   }
+
+  @override
+  List<Object> get props => <dynamic>[createdAt, numberOfPlayer, size, points];
 }
 
 @immutable
@@ -53,6 +56,14 @@ class Point extends Equatable {
     this.x,
     this.y,
   });
+
+  Point.fromMap(Map<String, dynamic> source)
+      : x = source['x'],
+        y = source['y'];
+
+  const Point.fromIndex(int size, int index)
+      : x = index % size,
+        y = index ~/ size;
 
   final int x;
   final int y;
@@ -63,6 +74,9 @@ class Point extends Equatable {
       'y': y,
     };
   }
+
+  @override
+  List<Object> get props => <dynamic>[x, y];
 }
 
 enum StoneState {

@@ -34,6 +34,19 @@ class RoomRepository {
     });
   }
 
+  Stream<List<Point>> fetchStones(String roomId) {
+    return Firestore.instance
+        .collection('rooms')
+        .document(roomId)
+        .collection('points')
+        .snapshots()
+        .asyncMap((QuerySnapshot snapshot) {
+      return snapshot.documents.map((DocumentSnapshot doc) {
+        return Point.fromMap(doc.data);
+      }).toList();
+    });
+  }
+
   void putStone(String roomId, Point point) {
     final map = point.toMap()
       ..addAll(<String, dynamic>{

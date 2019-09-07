@@ -60,16 +60,28 @@ class _KyouenView extends StatelessWidget {
       aspectRatio: 1.0,
       child: Container(
         color: Colors.green,
-        child: GridView.builder(
-          itemCount: 6 * 6,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 6,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            final StoneState state = room.stage[index];
-            return StoneView(
-              state: state,
-              onTap: () => _onTapStone(context, index),
+        child: StreamBuilder<List<Point>>(
+          stream: Provider.of<KyouenBloc>(context).points,
+          builder: (BuildContext context, AsyncSnapshot<List<Point>> snapshot) {
+            if (snapshot.connectionState != ConnectionState.active) {
+              return Container();
+            }
+
+            final List<Point> points = snapshot.data;
+            return GridView.builder(
+              itemCount: 6 * 6,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 6,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                final Point indexPoint = Point.fromIndex(room.size, index);
+                final bool hasStone = points.contains(indexPoint);
+
+                return StoneView(
+                  state: hasStone ? StoneState.black : StoneState.none,
+                  onTap: () => _onTapStone(context, index),
+                );
+              },
             );
           },
         ),
@@ -78,13 +90,11 @@ class _KyouenView extends StatelessWidget {
   }
 
   void _onTapStone(BuildContext context, int index) {
-    final int x = index % room.size;
-    final int y = index ~/ room.size;
     final KyouenBloc bloc = Provider.of<KyouenBloc>(context);
 
-    bloc.putStone.add(Point(
-      x: x,
-      y: y,
+    bloc.putStone.add(Point.fromIndex(
+      room.size,
+      index,
     ));
   }
 }
