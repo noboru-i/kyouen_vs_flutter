@@ -5,33 +5,33 @@ import 'package:kyouen_vs_flutter/pages/kyouen/stone_view.dart';
 import 'package:provider/provider.dart';
 
 class KyouenPageArguments {
-  final String roomId;
-
   KyouenPageArguments(this.roomId);
+
+  final String roomId;
 }
 
 class KyouenPage extends StatelessWidget {
-  static const routeName = '/kyouen';
+  static const String routeName = '/kyouen';
 
   @override
   Widget build(BuildContext context) {
     final KyouenPageArguments args = ModalRoute.of(context).settings.arguments;
-    final roomId = args.roomId;
+    final String roomId = args.roomId;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Kyouen"),
+        title: const Text('Kyouen'),
       ),
       body: Provider<KyouenBloc>(
         builder: (_) => KyouenBloc(roomId),
-        dispose: (_, bloc) => bloc.dispose(),
+        dispose: (_, KyouenBloc bloc) => bloc.dispose(),
         child: Builder(
-          builder: (context) {
+          builder: (BuildContext context) {
             return StreamBuilder<Room>(
                 stream: Provider.of<KyouenBloc>(context).room,
-                builder: (context, snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<Room> snapshot) {
                   if (snapshot.connectionState != ConnectionState.active) {
-                    return Text("please wait...");
+                    return const Text('please wait...');
                   }
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -50,9 +50,9 @@ class KyouenPage extends StatelessWidget {
 }
 
 class _KyouenView extends StatelessWidget {
-  final Room room;
+  const _KyouenView({@required this.room});
 
-  _KyouenView({@required this.room});
+  final Room room;
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +65,8 @@ class _KyouenView extends StatelessWidget {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 6,
           ),
-          itemBuilder: (context, index) {
-            final state = room.stage[index];
+          itemBuilder: (BuildContext context, int index) {
+            final StoneState state = room.stage[index];
             return StoneView(
               state: state,
               onTap: () => _onTapStone(index),
@@ -77,5 +77,5 @@ class _KyouenView extends StatelessWidget {
     );
   }
 
-  _onTapStone(int index) {}
+  void _onTapStone(int index) {}
 }

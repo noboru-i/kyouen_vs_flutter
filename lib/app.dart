@@ -9,10 +9,10 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
+      providers: <SingleChildCloneableWidget>[
         Provider<RoomBloc>(
           builder: (_) => RoomBloc(),
-          dispose: (_, bloc) => bloc.dispose(),
+          dispose: (_, RoomBloc bloc) => bloc.dispose(),
         )
       ],
       child: MaterialApp(
@@ -21,10 +21,10 @@ class App extends StatelessWidget {
           primarySwatch: Colors.blueGrey,
         ),
         initialRoute: HomePage.routeName,
-        routes: {
-          HomePage.routeName: (context) => HomePage(),
-          RoomListPage.routeName: (context) => RoomListPage(),
-          KyouenPage.routeName: (context) => KyouenPage(),
+        routes: <String, WidgetBuilder>{
+          HomePage.routeName: (BuildContext context) => HomePage(),
+          RoomListPage.routeName: (BuildContext context) => RoomListPage(),
+          KyouenPage.routeName: (BuildContext context) => KyouenPage(),
         },
       ),
     );

@@ -4,6 +4,22 @@ import 'package:meta/meta.dart';
 
 @immutable
 class Room extends Equatable {
+  Room({
+    this.createdAt,
+    this.numberOfPlayer,
+    this.size,
+    this.points,
+  }) : super(<dynamic>[createdAt, numberOfPlayer, size, points]);
+
+  Room.fromMap(Map<String, dynamic> source)
+      : createdAt = (source['created_at'] is Timestamp)
+            ? source['created_at'].toDate()
+            : null,
+        numberOfPlayer = source['number_of_player'],
+        size = source['size'],
+        // TODO(noboru-i): fix later.
+        points = <Point>[];
+
   final DateTime createdAt;
   final int numberOfPlayer;
   final int size;
@@ -11,22 +27,8 @@ class Room extends Equatable {
 
   List<StoneState> get stage => generateStage();
 
-  Room({
-    this.createdAt,
-    this.numberOfPlayer,
-    this.size,
-    this.points,
-  }) : super([createdAt, numberOfPlayer, size, points]);
-
-  Room.fromMap(Map<String, dynamic> source)
-      : createdAt = (source['created_at'] as Timestamp).toDate(),
-        numberOfPlayer = source['number_of_player'],
-        size = source['size'],
-        // TODO
-        points = [] {}
-
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       'created_at': createdAt,
       'number_of_player': numberOfPlayer,
       'size': size,
@@ -35,9 +37,10 @@ class Room extends Equatable {
   }
 
   List<StoneState> generateStage() {
-    var list = List.generate(size * size, (i) => StoneState.none);
-    for (final p in points) {
-      final index = p.x + p.y * size;
+    final List<StoneState> list =
+        List<StoneState>.generate(size * size, (int i) => StoneState.none);
+    for (final Point p in points) {
+      final int index = p.x + p.y * size;
       list[index] = StoneState.black;
     }
     return list;
@@ -46,13 +49,13 @@ class Room extends Equatable {
 
 @immutable
 class Point extends Equatable {
-  final int x;
-  final int y;
-
-  Point({
+  const Point({
     this.x,
     this.y,
   });
+
+  final int x;
+  final int y;
 }
 
 enum StoneState {

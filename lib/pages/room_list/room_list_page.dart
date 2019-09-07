@@ -7,13 +7,13 @@ import 'package:kyouen_vs_flutter/pages/room_list/room_list_item.dart';
 import 'package:provider/provider.dart';
 
 class RoomListPage extends StatelessWidget {
-  static const routeName = '/room_list';
+  static const String routeName = '/room_list';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Room list"),
+        title: const Text('Room list'),
       ),
       body: RoomListWidget(),
       floatingActionButton: FloatingActionButton(
@@ -23,8 +23,8 @@ class RoomListPage extends StatelessWidget {
     );
   }
 
-  void _createRoom(BuildContext context) async {
-    final bloc = Provider.of<RoomBloc>(context);
+  Future<void> _createRoom(BuildContext context) async {
+    final RoomBloc bloc = Provider.of<RoomBloc>(context);
     bloc.addRoom.add(Room(
       createdAt: DateTime.now(),
       numberOfPlayer: 0,
@@ -36,7 +36,7 @@ class RoomListPage extends StatelessWidget {
 class RoomListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<RoomBloc>(context);
+    final RoomBloc bloc = Provider.of<RoomBloc>(context);
     return StreamBuilder<QuerySnapshot>(
       stream: bloc.roomList,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -50,8 +50,9 @@ class RoomListWidget extends StatelessWidget {
           default:
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
-                final document = snapshot.data.documents[index];
-                final room = Room.fromMap(document.data);
+                final DocumentSnapshot document =
+                    snapshot.data.documents[index];
+                final Room room = Room.fromMap(document.data);
                 return RoomListItem(
                   room: room,
                   onTap: () => _onTapItem(context, document.documentID),
