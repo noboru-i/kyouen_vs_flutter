@@ -31,7 +31,16 @@ commands:
       # TODO maybe we can use result to "Danger".
       - run:
           name: Run flutter analyze
-          command: $FLUTTER_HOME/bin/flutter analyze
+          command: $FLUTTER_HOME/bin/flutter analyze > flutter_analyze_report.txt || true
+      - store_artifacts:
+          path: flutter_analyze_report.txt
+
+  exec_danger:
+    steps:
+      - run:
+          name: Run Danger
+          command: bundle exec danger
+
   build_apk:
     steps:
       - run:
@@ -61,7 +70,7 @@ commands:
           name: Try doctor
           command: $FLUTTER_HOME/bin/flutter doctor
 
-  setup_fastlane:
+  install_ruby_gems:
     steps:
       - run:
           name: Set ruby version
@@ -89,6 +98,14 @@ commands:
           working_directory: ~/project/ios
 
 jobs:
+  lint:
+    executor: default_android
+    steps:
+      - checkout
+      - decrypt_files
+      - flutter_analyze
+      - install_ruby_gems
+      - exec_danger
   build_android:
     executor: default_android
     steps:
@@ -105,11 +122,14 @@ jobs:
       - install_flutter
       # - flutter_analyze
       # TODO below commands are used for deploy
-      - setup_fastlane
+      - install_ruby_gems
       - setup_ios_build_setting
       - build_ipa
 
 workflows:
+  check:
+    jobs:
+      - lint
   build:
     jobs:
       - build_android:

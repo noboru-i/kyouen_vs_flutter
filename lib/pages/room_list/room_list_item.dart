@@ -17,5 +17,6 @@ class RoomListItem extends StatelessWidget {
       onTap: onTap,
     );
     ;
+    ;
   }
 }
