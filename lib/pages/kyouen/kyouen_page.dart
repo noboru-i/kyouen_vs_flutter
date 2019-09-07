@@ -4,8 +4,9 @@ import 'package:kyouen_vs_flutter/entities/room.dart';
 import 'package:kyouen_vs_flutter/pages/kyouen/stone_view.dart';
 import 'package:provider/provider.dart';
 
+@immutable
 class KyouenPageArguments {
-  KyouenPageArguments(this.roomId);
+  const KyouenPageArguments(this.roomId);
 
   final String roomId;
 }
@@ -76,10 +77,12 @@ class _KyouenView extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 final Point indexPoint = Point.fromIndex(room.size, index);
                 final bool hasStone = points.contains(indexPoint);
+                final StoneState state =
+                    hasStone ? StoneState.black : StoneState.none;
 
                 return StoneView(
-                  state: hasStone ? StoneState.black : StoneState.none,
-                  onTap: () => _onTapStone(context, index),
+                  state: state,
+                  onTap: () => _onTapStone(context, index, state),
                 );
               },
             );
@@ -89,7 +92,12 @@ class _KyouenView extends StatelessWidget {
     );
   }
 
-  void _onTapStone(BuildContext context, int index) {
+  void _onTapStone(BuildContext context, int index, StoneState state) {
+    if (state == StoneState.black) {
+      // already put stone
+      return;
+    }
+
     final KyouenBloc bloc = Provider.of<KyouenBloc>(context);
 
     bloc.putStone.add(Point.fromIndex(
