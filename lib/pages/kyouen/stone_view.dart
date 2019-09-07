@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
 
+@immutable
 class StoneView extends StatelessWidget {
   const StoneView({
     @required this.state,
@@ -13,7 +14,10 @@ class StoneView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state == StoneState.none) {
-      return const _StoneBackgroundView();
+      return InkWell(
+        child: const _StoneBackgroundView(),
+        onTap: onTap,
+      );
     }
 
     final bool isBlack = state == StoneState.black;

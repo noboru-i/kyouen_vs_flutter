@@ -1,22 +1,25 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
 import 'package:kyouen_vs_flutter/repositories/room_repository.dart';
 
 class RoomBloc {
   RoomBloc() {
+    _roomListController.addStream(RoomRepository.instance.fetchRooms());
+
     _addController.stream.listen(_addRoomListener);
   }
 
   final StreamController<Room> _addController = StreamController<Room>();
 
+  final StreamController<List<Room>> _roomListController =
+      StreamController<List<Room>>();
+
   // input
   Sink<Room> get addRoom => _addController.sink;
 
   // output
-  // TODO(noboru-i): change type to exclude Firestore dependency.
-  Stream<QuerySnapshot> get roomList => RoomRepository.instance.snapshots();
+  Stream<List<Room>> get roomList => _roomListController.stream;
 
   void dispose() {
     _addController.close();

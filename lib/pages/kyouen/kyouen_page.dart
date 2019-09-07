@@ -4,8 +4,9 @@ import 'package:kyouen_vs_flutter/entities/room.dart';
 import 'package:kyouen_vs_flutter/pages/kyouen/stone_view.dart';
 import 'package:provider/provider.dart';
 
+@immutable
 class KyouenPageArguments {
-  KyouenPageArguments(this.roomId);
+  const KyouenPageArguments(this.roomId);
 
   final String roomId;
 }
@@ -60,16 +61,30 @@ class _KyouenView extends StatelessWidget {
       aspectRatio: 1.0,
       child: Container(
         color: Colors.green,
-        child: GridView.builder(
-          itemCount: 6 * 6,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 6,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            final StoneState state = room.stage[index];
-            return StoneView(
-              state: state,
-              onTap: () => _onTapStone(index),
+        child: StreamBuilder<List<Point>>(
+          stream: Provider.of<KyouenBloc>(context).points,
+          builder: (BuildContext context, AsyncSnapshot<List<Point>> snapshot) {
+            if (snapshot.connectionState != ConnectionState.active) {
+              return Container();
+            }
+
+            final List<Point> points = snapshot.data;
+            return GridView.builder(
+              itemCount: room.size * room.size,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: room.size,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                final Point indexPoint = Point.fromIndex(room.size, index);
+                final bool hasStone = points.contains(indexPoint);
+                final StoneState state =
+                    hasStone ? StoneState.black : StoneState.none;
+
+                return StoneView(
+                  state: state,
+                  onTap: () => _onTapStone(context, index, state),
+                );
+              },
             );
           },
         ),
@@ -77,5 +92,17 @@ class _KyouenView extends StatelessWidget {
     );
   }
 
-  void _onTapStone(int index) {}
+  void _onTapStone(BuildContext context, int index, StoneState state) {
+    if (state == StoneState.black) {
+      // already put stone
+      return;
+    }
+
+    final KyouenBloc bloc = Provider.of<KyouenBloc>(context);
+
+    bloc.putStone.add(Point.fromIndex(
+      room.size,
+      index,
+    ));
+  }
 }
