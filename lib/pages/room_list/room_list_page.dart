@@ -50,22 +50,23 @@ class RoomListWidget extends StatelessWidget {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
-
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return const Text('Loading...');
-          default:
-            return ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                final RoomDocument roomDocument = snapshot.data[index];
-                return RoomListItem(
-                  room: roomDocument.room,
-                  onTap: () => _onTapItem(context, roomDocument.id),
-                );
-              },
-              itemCount: snapshot.data.length,
-            );
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text('Loading...');
         }
+        if (snapshot.data.isEmpty) {
+          return const Text('There is no rooms.');
+        }
+
+        return ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            final RoomDocument roomDocument = snapshot.data[index];
+            return RoomListItem(
+              room: roomDocument.room,
+              onTap: () => _onTapItem(context, roomDocument.id),
+            );
+          },
+          itemCount: snapshot.data.length,
+        );
       },
     );
   }
