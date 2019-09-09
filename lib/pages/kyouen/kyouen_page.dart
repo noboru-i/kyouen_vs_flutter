@@ -110,7 +110,7 @@ class _KyouenView extends StatelessWidget {
               return Container();
             }
 
-            final List<Point> points = snapshot.data ?? [];
+            final List<Point> points = snapshot.data ?? <Point>[];
             return GridView.builder(
               itemCount: room.size * room.size,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
