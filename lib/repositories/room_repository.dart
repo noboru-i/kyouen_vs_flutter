@@ -7,23 +7,28 @@ class RoomRepository {
   static final RoomRepository instance = RoomRepository();
 
   Future<void> addRoom(Room room) async {
-    await Firestore.instance
-        .collection('rooms')
-        .document()
-        .setData(room.toMap());
+    final Map<String, dynamic> map = room.toJson()
+      ..addAll(<String, dynamic>{
+        'created_at': FieldValue.serverTimestamp(),
+      });
+
+    await Firestore.instance.collection('rooms').document().setData(map);
   }
 
-  Stream<Room> fetch(String roomId) {
+  Stream<RoomDocument> fetch(String roomId) {
     return Firestore.instance
         .collection('rooms')
         .document(roomId)
         .snapshots()
         .asyncMap((DocumentSnapshot snapshot) {
-      return Room.fromMap(snapshot.documentID, snapshot.data);
+      return RoomDocument(
+        id: snapshot.documentID,
+        room: Room.fromJson(snapshot.data),
+      );
     });
   }
 
-  Stream<List<Room>> fetchRooms() {
+  Stream<List<RoomDocument>> fetchRooms() {
     return Firestore.instance
         .collection('rooms')
         .orderBy(
@@ -33,7 +38,7 @@ class RoomRepository {
         .snapshots()
         .asyncMap((QuerySnapshot snapshot) {
       return snapshot.documents.map((DocumentSnapshot doc) {
-        return Room.fromMap(doc.documentID, doc.data);
+        return RoomDocument(id: doc.documentID, room: Room.fromJson(doc.data));
       }).toList();
     });
   }
@@ -46,15 +51,15 @@ class RoomRepository {
         .snapshots()
         .asyncMap((QuerySnapshot snapshot) {
       return snapshot.documents.map((DocumentSnapshot doc) {
-        return Point.fromMap(doc.data);
+        return Point.fromJson(doc.data);
       }).toList();
     });
   }
 
   void putStone(String roomId, Point point) {
-    final Map<String, dynamic> map = point.toMap()
+    final Map<String, dynamic> map = point.toJson()
       ..addAll(<String, dynamic>{
-        'createdAt': FieldValue.serverTimestamp(),
+        'created_at': FieldValue.serverTimestamp(),
       });
 
     Firestore.instance

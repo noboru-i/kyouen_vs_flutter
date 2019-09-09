@@ -29,20 +29,22 @@ class KyouenPage extends StatelessWidget {
         dispose: (_, KyouenBloc bloc) => bloc.dispose(),
         child: Builder(
           builder: (BuildContext context) {
-            return StreamBuilder<Room>(
+            return StreamBuilder<RoomDocument>(
                 stream: Provider.of<KyouenBloc>(context).room,
-                builder: (BuildContext context, AsyncSnapshot<Room> snapshot) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<RoomDocument> snapshot) {
                   if (snapshot.connectionState != ConnectionState.active) {
                     return const Text('please wait...');
                   }
+                  final Room room = snapshot.data.room;
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       _PlayerContainerView(
-                        room: snapshot.data,
+                        room: room,
                       ),
                       _KyouenView(
-                        room: snapshot.data,
+                        room: room,
                       ),
                     ],
                   );
@@ -108,7 +110,7 @@ class _KyouenView extends StatelessWidget {
               return Container();
             }
 
-            final List<Point> points = snapshot.data;
+            final List<Point> points = snapshot.data ?? <Point>[];
             return GridView.builder(
               itemCount: room.size * room.size,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

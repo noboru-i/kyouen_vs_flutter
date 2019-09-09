@@ -1,16 +1,17 @@
 # kyouen_vs_flutter
 
-A new Flutter project.
+A Kyouen app user versus other players.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Set Firebase config file
 
-A few resources to get you started if this is your first Flutter project:
+Download `google-services.json` to `android/app/google-services.json`.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Download `GoogleService-Info.plist` to `ios/Runner/GoogleService-Info.plist`.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Generate `.g.dart` files
+
+```
+flutter pub run build_runner build
+```

@@ -15,7 +15,8 @@ class KyouenBloc {
 
   final StreamController<Point> _putStoneController = StreamController<Point>();
 
-  final StreamController<Room> _roomController = StreamController<Room>();
+  final StreamController<RoomDocument> _roomController =
+      StreamController<RoomDocument>();
   final StreamController<List<Point>> _pointsController =
       StreamController<List<Point>>();
 
@@ -23,7 +24,7 @@ class KyouenBloc {
   Sink<Point> get putStone => _putStoneController.sink;
 
   // output
-  Stream<Room> get room => _roomController.stream;
+  Stream<RoomDocument> get room => _roomController.stream;
   Stream<List<Point>> get points => _pointsController.stream;
 
   void dispose() {

@@ -10,14 +10,20 @@ class RoomListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Room list'),
-      ),
-      body: RoomListWidget(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _createRoom(context),
-        child: Icon(Icons.add),
+    return Provider<RoomBloc>(
+      builder: (_) => RoomBloc(),
+      dispose: (_, RoomBloc bloc) => bloc.dispose(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Room list'),
+        ),
+        body: RoomListWidget(),
+        floatingActionButton: Builder(
+          builder: (BuildContext context) => FloatingActionButton(
+            onPressed: () => _createRoom(context),
+            child: Icon(Icons.add),
+          ),
+        ),
       ),
     );
   }
@@ -36,9 +42,10 @@ class RoomListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final RoomBloc bloc = Provider.of<RoomBloc>(context);
-    return StreamBuilder<List<Room>>(
+    return StreamBuilder<List<RoomDocument>>(
       stream: bloc.roomList,
-      builder: (BuildContext context, AsyncSnapshot<List<Room>> snapshot) {
+      builder:
+          (BuildContext context, AsyncSnapshot<List<RoomDocument>> snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
@@ -49,10 +56,10 @@ class RoomListWidget extends StatelessWidget {
           default:
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
-                final Room room = snapshot.data[index];
+                final RoomDocument roomDocument = snapshot.data[index];
                 return RoomListItem(
-                  room: room,
-                  onTap: () => _onTapItem(context, room.id),
+                  room: roomDocument.room,
+                  onTap: () => _onTapItem(context, roomDocument.id),
                 );
               },
               itemCount: snapshot.data.length,
