@@ -7,10 +7,12 @@ class RoomRepository {
   static final RoomRepository instance = RoomRepository();
 
   Future<void> addRoom(Room room) async {
-    await Firestore.instance
-        .collection('rooms')
-        .document()
-        .setData(room.toJson());
+    final Map<String, dynamic> map = room.toJson()
+      ..addAll(<String, dynamic>{
+        'created_at': FieldValue.serverTimestamp(),
+      });
+
+    await Firestore.instance.collection('rooms').document().setData(map);
   }
 
   Stream<RoomDocument> fetch(String roomId) {
@@ -49,15 +51,15 @@ class RoomRepository {
         .snapshots()
         .asyncMap((QuerySnapshot snapshot) {
       return snapshot.documents.map((DocumentSnapshot doc) {
-        return Point.fromMap(doc.data);
+        return Point.fromJson(doc.data);
       }).toList();
     });
   }
 
   void putStone(String roomId, Point point) {
-    final Map<String, dynamic> map = point.toMap()
+    final Map<String, dynamic> map = point.toJson()
       ..addAll(<String, dynamic>{
-        'createdAt': FieldValue.serverTimestamp(),
+        'created_at': FieldValue.serverTimestamp(),
       });
 
     Firestore.instance

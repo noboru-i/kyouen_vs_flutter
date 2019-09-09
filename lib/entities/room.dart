@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -17,7 +18,7 @@ class Room extends Equatable {
 
   Map<String, dynamic> toJson() => _$RoomToJson(this);
 
-  @JsonKey(fromJson: _dateTimeFromEpochUs, toJson: _dateTimeToEpochUs)
+  @JsonKey(fromJson: _dateTimeFromTimestamp)
   final DateTime createdAt;
 
   final int numberOfPlayer;
@@ -27,11 +28,9 @@ class Room extends Equatable {
   @override
   List<Object> get props => <dynamic>[createdAt, numberOfPlayer, size];
 
-  static DateTime _dateTimeFromEpochUs(int us) =>
-      us == null ? null : DateTime.fromMicrosecondsSinceEpoch(us);
-
-  static int _dateTimeToEpochUs(DateTime dateTime) =>
-      dateTime?.microsecondsSinceEpoch;
+  // TODO(noboru-i): remove dependency to firestore
+  static DateTime _dateTimeFromTimestamp(Timestamp timestamp) =>
+      timestamp == null ? null : timestamp.toDate();
 }
 
 @immutable
@@ -43,6 +42,9 @@ class RoomDocument extends Equatable {
 
   final String id;
   final Room room;
+
+  @override
+  List<Object> get props => <dynamic>[id, room];
 }
 
 @immutable
@@ -53,23 +55,16 @@ class Point extends Equatable {
     this.y,
   });
 
-  Point.fromMap(Map<String, dynamic> source)
-      : x = source['x'],
-        y = source['y'];
-
   const Point.fromIndex(int size, int index)
       : x = index % size,
         y = index ~/ size;
 
+  factory Point.fromJson(Map<String, dynamic> json) => _$PointFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PointToJson(this);
+
   final int x;
   final int y;
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'x': x,
-      'y': y,
-    };
-  }
 
   @override
   List<Object> get props => <dynamic>[x, y];

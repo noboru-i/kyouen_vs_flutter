@@ -14,7 +14,7 @@ class RoomListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(room.createdAt?.toIso8601String() ?? 'no data'),
+      title: Text(room.createdAt?.toIso8601String() ?? ''),
       onTap: onTap,
     );
   }
