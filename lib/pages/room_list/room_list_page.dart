@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/blocs/room_bloc.dart';
+import 'package:kyouen_vs_flutter/entities/player.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
 import 'package:kyouen_vs_flutter/pages/kyouen/kyouen_page.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_item.dart';
@@ -30,9 +31,9 @@ class RoomListPage extends StatelessWidget {
 
   Future<void> _createRoom(BuildContext context) async {
     final RoomBloc bloc = Provider.of<RoomBloc>(context);
-    bloc.addRoom.add(Room(
-      createdAt: DateTime.now(),
-      numberOfPlayer: 0,
+    bloc.addRoom.add(const Room(
+      owner: Player(name: 'owner'), // TODO(noboru-i): implement later.
+      isOwnerFirstMove: true,
       size: 6,
     ));
   }
