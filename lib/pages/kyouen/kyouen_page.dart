@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/blocs/kyouen_bloc.dart';
+import 'package:kyouen_vs_flutter/entities/player.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
 import 'package:kyouen_vs_flutter/pages/kyouen/stone_view.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,9 @@ class KyouenPage extends StatelessWidget {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
+                      _PlayerContainerView(
+                        room: snapshot.data,
+                      ),
                       _KyouenView(
                         room: snapshot.data,
                       ),
@@ -50,8 +54,44 @@ class KyouenPage extends StatelessWidget {
   }
 }
 
+class _PlayerContainerView extends StatelessWidget {
+  const _PlayerContainerView({
+    @required this.room,
+  });
+
+  final Room room;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: const <Widget>[
+        // TODO(noboru-i): create Player from Room.
+        _PlayerView(player: Player(name: 'You')),
+        _PlayerView(player: Player(name: 'Rival')),
+      ],
+    );
+  }
+}
+
+class _PlayerView extends StatelessWidget {
+  const _PlayerView({
+    @required this.player,
+  });
+
+  final Player player;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO(noboru-i): show which player is thinking.
+    return Text(player.name);
+  }
+}
+
 class _KyouenView extends StatelessWidget {
-  const _KyouenView({@required this.room});
+  const _KyouenView({
+    @required this.room,
+  });
 
   final Room room;
 
