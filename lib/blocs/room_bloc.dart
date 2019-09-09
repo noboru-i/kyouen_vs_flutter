@@ -12,17 +12,18 @@ class RoomBloc {
 
   final StreamController<Room> _addController = StreamController<Room>();
 
-  final StreamController<List<Room>> _roomListController =
-      StreamController<List<Room>>();
+  final StreamController<List<RoomDocument>> _roomListController =
+      StreamController<List<RoomDocument>>();
 
   // input
   Sink<Room> get addRoom => _addController.sink;
 
   // output
-  Stream<List<Room>> get roomList => _roomListController.stream;
+  Stream<List<RoomDocument>> get roomList => _roomListController.stream;
 
   void dispose() {
     _addController.close();
+    _roomListController.close();
   }
 
   void _addRoomListener(Room room) {

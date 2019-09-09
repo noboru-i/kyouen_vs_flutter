@@ -1,41 +1,52 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+part 'room.g.dart';
+
 @immutable
+@JsonSerializable()
 class Room extends Equatable {
   const Room({
-    this.id,
     this.createdAt,
     this.numberOfPlayer,
     this.size,
   });
 
-  Room.fromMap(this.id, Map<String, dynamic> source)
-      : createdAt = (source['created_at'] is Timestamp)
-            ? source['created_at'].toDate()
-            : null,
-        numberOfPlayer = source['number_of_player'],
-        size = source['size'];
+  factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 
-  final String id;
+  Map<String, dynamic> toJson() => _$RoomToJson(this);
+
+  @JsonKey(fromJson: _dateTimeFromEpochUs, toJson: _dateTimeToEpochUs)
   final DateTime createdAt;
-  final int numberOfPlayer;
-  final int size;
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'created_at': createdAt,
-      'number_of_player': numberOfPlayer,
-      'size': size,
-    };
-  }
+  final int numberOfPlayer;
+
+  final int size;
 
   @override
   List<Object> get props => <dynamic>[createdAt, numberOfPlayer, size];
+
+  static DateTime _dateTimeFromEpochUs(int us) =>
+      us == null ? null : DateTime.fromMicrosecondsSinceEpoch(us);
+
+  static int _dateTimeToEpochUs(DateTime dateTime) =>
+      dateTime?.microsecondsSinceEpoch;
 }
 
 @immutable
+class RoomDocument extends Equatable {
+  const RoomDocument({
+    this.id,
+    this.room,
+  });
+
+  final String id;
+  final Room room;
+}
+
+@immutable
+@JsonSerializable()
 class Point extends Equatable {
   const Point({
     this.x,

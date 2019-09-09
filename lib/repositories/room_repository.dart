@@ -10,20 +10,23 @@ class RoomRepository {
     await Firestore.instance
         .collection('rooms')
         .document()
-        .setData(room.toMap());
+        .setData(room.toJson());
   }
 
-  Stream<Room> fetch(String roomId) {
+  Stream<RoomDocument> fetch(String roomId) {
     return Firestore.instance
         .collection('rooms')
         .document(roomId)
         .snapshots()
         .asyncMap((DocumentSnapshot snapshot) {
-      return Room.fromMap(snapshot.documentID, snapshot.data);
+      return RoomDocument(
+        id: snapshot.documentID,
+        room: Room.fromJson(snapshot.data),
+      );
     });
   }
 
-  Stream<List<Room>> fetchRooms() {
+  Stream<List<RoomDocument>> fetchRooms() {
     return Firestore.instance
         .collection('rooms')
         .orderBy(
@@ -33,7 +36,7 @@ class RoomRepository {
         .snapshots()
         .asyncMap((QuerySnapshot snapshot) {
       return snapshot.documents.map((DocumentSnapshot doc) {
-        return Room.fromMap(doc.documentID, doc.data);
+        return RoomDocument(id: doc.documentID, room: Room.fromJson(doc.data));
       }).toList();
     });
   }

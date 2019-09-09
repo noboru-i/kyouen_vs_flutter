@@ -25,6 +25,11 @@ commands:
       - run:
           name: Decrypt ios files
           command: openssl aes-256-cbc -k $DECRYPT_KEY -d -in ios/Runner/GoogleService-Info.encrypted.plist -out ios/Runner/GoogleService-Info.plist -md sha256
+  run_build_runner:
+    steps:
+      - run:
+          name: Run build_runner
+          command: $FLUTTER_HOME/bin/flutter pub run build_runner build
 
   flutter_analyze:
     steps:
@@ -103,6 +108,7 @@ jobs:
     steps:
       - checkout
       - decrypt_files
+      - run_build_runner
       - flutter_analyze
       - install_ruby_gems
       - exec_danger
@@ -111,7 +117,7 @@ jobs:
     steps:
       - checkout
       - decrypt_files
-      # - flutter_analyze
+      - run_build_runner
       - build_apk
       - deploy_to_deploygate
   build_ios:
@@ -120,9 +126,8 @@ jobs:
       - checkout
       - decrypt_files
       - install_flutter
-      # - flutter_analyze
-      # TODO below commands are used for deploy
       - install_ruby_gems
+      - run_build_runner
       - setup_ios_build_setting
       - build_ipa
 
