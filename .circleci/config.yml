@@ -28,6 +28,9 @@ commands:
   run_build_runner:
     steps:
       - run:
+          name: Run package get
+          command: $FLUTTER_HOME/bin/flutter pub get
+      - run:
           name: Run build_runner
           command: $FLUTTER_HOME/bin/flutter pub run build_runner build
 
