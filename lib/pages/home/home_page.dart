@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kyouen_vs_flutter/blocs/login_bloc.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_page.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   static const String routeName = '/';
@@ -16,7 +17,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
-              onPressed: _signIn,
+              onPressed: () => _signIn(context),
               child: const Text(
                 'Sign in anonymously',
               ),
@@ -33,14 +34,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Future<FirebaseUser> _signIn() async {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    // TODO(noboru-i): Sign in with Twitter is crashed. So temporally login anonymously.
-    final AuthResult result = await _auth.signInAnonymously();
-
-    print('signed in ${result.user.uid}');
-
-    return result.user;
+  Future<void> _signIn(BuildContext context) async {
+    Provider.of<LoginBloc>(context).login.add(null);
   }
 
   void _moveToRoomList(BuildContext context) {
