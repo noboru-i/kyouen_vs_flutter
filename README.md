@@ -15,3 +15,9 @@ Download `GoogleService-Info.plist` to `ios/Runner/GoogleService-Info.plist`.
 ```
 flutter pub run build_runner build
 ```
+
+### How to deploy Firebase Functions
+
+```
+firebase deploy --only functions
+```
