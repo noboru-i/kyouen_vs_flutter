@@ -35,5 +35,6 @@ class LoginUser extends Equatable {
 
   final String name;
 
-  List<Object> get props => [name];
+  @override
+  List<Object> get props => <Object>[name];
 }
