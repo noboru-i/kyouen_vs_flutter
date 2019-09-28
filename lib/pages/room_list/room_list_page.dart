@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kyouen_vs_flutter/blocs/room_bloc.dart';
+import 'package:kyouen_vs_flutter/entities/player.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
 import 'package:kyouen_vs_flutter/pages/kyouen/kyouen_page.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_item.dart';
@@ -30,9 +31,9 @@ class RoomListPage extends StatelessWidget {
 
   Future<void> _createRoom(BuildContext context) async {
     final RoomBloc bloc = Provider.of<RoomBloc>(context);
-    bloc.addRoom.add(Room(
-      createdAt: DateTime.now(),
-      numberOfPlayer: 0,
+    bloc.addRoom.add(const Room(
+      owner: Player(name: 'owner'), // TODO(noboru-i): implement later.
+      isOwnerFirstMove: true,
       size: 6,
     ));
   }
@@ -49,22 +50,23 @@ class RoomListWidget extends StatelessWidget {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
-
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return const Text('Loading...');
-          default:
-            return ListView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                final RoomDocument roomDocument = snapshot.data[index];
-                return RoomListItem(
-                  room: roomDocument.room,
-                  onTap: () => _onTapItem(context, roomDocument.id),
-                );
-              },
-              itemCount: snapshot.data.length,
-            );
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text('Loading...');
         }
+        if (snapshot.data.isEmpty) {
+          return const Text('There is no rooms.');
+        }
+
+        return ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            final RoomDocument roomDocument = snapshot.data[index];
+            return RoomListItem(
+              room: roomDocument.room,
+              onTap: () => _onTapItem(context, roomDocument.id),
+            );
+          },
+          itemCount: snapshot.data.length,
+        );
       },
     );
   }

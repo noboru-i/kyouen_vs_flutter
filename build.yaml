@@ -4,12 +4,12 @@ targets:
       json_serializable:
         options:
           # https://pub.dev/documentation/json_annotation/latest/json_annotation/JsonSerializable-class.html
-#          any_map: false
+          any_map: true
 #          checked: false
 #          create_factory: true
 #          create_to_json: true
 #          disallow_unrecognized_keys: false
-#          explicit_to_json: false
+          explicit_to_json: true
           field_rename: snake
 #          ignore_unannotated: false
 #          include_if_null: true

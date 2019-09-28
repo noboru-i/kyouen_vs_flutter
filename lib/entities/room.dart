@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kyouen_vs_flutter/entities/player.dart';
 import 'package:meta/meta.dart';
 
 part 'room.g.dart';
@@ -9,24 +10,31 @@ part 'room.g.dart';
 @JsonSerializable()
 class Room extends Equatable {
   const Room({
+    @required this.owner,
+    @required this.isOwnerFirstMove,
+    @required this.size,
+    this.attendee,
     this.createdAt,
-    this.numberOfPlayer,
-    this.size,
   });
 
   factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
 
   Map<String, dynamic> toJson() => _$RoomToJson(this);
 
-  @JsonKey(fromJson: _dateTimeFromTimestamp)
-  final DateTime createdAt;
+  final Player owner;
 
-  final int numberOfPlayer;
+  final bool isOwnerFirstMove;
 
   final int size;
 
+  final Player attendee;
+
+  @JsonKey(fromJson: _dateTimeFromTimestamp)
+  final DateTime createdAt;
+
   @override
-  List<Object> get props => <dynamic>[createdAt, numberOfPlayer, size];
+  List<Object> get props =>
+      <dynamic>[owner, isOwnerFirstMove, size, attendee, createdAt];
 
   // TODO(noboru-i): remove dependency to firestore
   static DateTime _dateTimeFromTimestamp(Timestamp timestamp) =>
