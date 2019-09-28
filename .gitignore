@@ -14,7 +14,7 @@
 *.iml
 *.ipr
 *.iws
-.idea/
+.idea/*
 
 # Visual Studio Code related
 .vscode/
@@ -105,3 +105,6 @@ ios/Runner/GoogleService-Info.plist
 
 # Generated code
 **/*.g.dart
+
+# share run configurations
+!.idea/runConfigurations
