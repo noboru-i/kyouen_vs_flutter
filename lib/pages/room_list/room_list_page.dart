@@ -12,7 +12,7 @@ class RoomListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<RoomBloc>(
-      builder: (_) => RoomBloc(),
+      create: (_) => RoomBloc(),
       dispose: (_, RoomBloc bloc) => bloc.dispose(),
       child: Scaffold(
         appBar: AppBar(

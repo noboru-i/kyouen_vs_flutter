@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
   }
 
   Future<void> _signIn(BuildContext context) async {
-    Provider.of<LoginBloc>(context).login.add(null);
+    Provider.of<LoginBloc>(context, listen: false).login.add(null);
   }
 
   void _moveToRoomList(BuildContext context) {
