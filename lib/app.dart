@@ -9,7 +9,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<LoginBloc>(
-      builder: (_) => LoginBloc(),
+      create: (_) => LoginBloc(),
       dispose: (_, LoginBloc bloc) => bloc.dispose(),
       child: MaterialApp(
         title: 'Kyouen VS',

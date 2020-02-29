@@ -16,4 +16,7 @@ class Player extends Equatable {
   Map<String, dynamic> toJson() => _$PlayerToJson(this);
 
   final String name;
+
+  @override
+  List<Object> get props => <dynamic>[name];
 }

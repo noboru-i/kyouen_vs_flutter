@@ -17,7 +17,8 @@ class KyouenPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final KyouenPageArguments args = ModalRoute.of(context).settings.arguments;
+    final KyouenPageArguments args =
+        ModalRoute.of(context).settings.arguments as KyouenPageArguments;
     final String roomId = args.roomId;
 
     return Scaffold(
@@ -25,7 +26,7 @@ class KyouenPage extends StatelessWidget {
         title: const Text('Kyouen'),
       ),
       body: Provider<KyouenBloc>(
-        builder: (_) => KyouenBloc(roomId),
+        create: (_) => KyouenBloc(roomId),
         dispose: (_, KyouenBloc bloc) => bloc.dispose(),
         child: Builder(
           builder: (BuildContext context) {
@@ -140,7 +141,7 @@ class _KyouenView extends StatelessWidget {
       return;
     }
 
-    final KyouenBloc bloc = Provider.of<KyouenBloc>(context);
+    final KyouenBloc bloc = Provider.of<KyouenBloc>(context, listen: false);
 
     bloc.putStone.add(Point.fromIndex(
       room.size,
