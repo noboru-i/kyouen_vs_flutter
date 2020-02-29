@@ -17,7 +17,8 @@ class KyouenPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final KyouenPageArguments args = ModalRoute.of(context).settings.arguments;
+    final KyouenPageArguments args =
+        ModalRoute.of(context).settings.arguments as KyouenPageArguments;
     final String roomId = args.roomId;
 
     return Scaffold(
