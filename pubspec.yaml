@@ -10,12 +10,16 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Design
   cupertino_icons: ^0.1.2
-  firebase_core: 0.4.3+3 # https://github.com/FirebaseExtended/flutterfire/issues/2087
+
+  # Firebase
+  firebase_core: 0.4.4 # https://github.com/FirebaseExtended/flutterfire/issues/2087
   firebase_analytics: ^5.0.11
   firebase_auth: 0.15.4 # https://github.com/FirebaseExtended/flutterfire/issues/2087
-  cloud_firestore: 0.13.2+3 # https://github.com/FirebaseExtended/flutterfire/issues/2087
-  cloud_firestore_platform_interface: 1.0.0 # causes 'MethodChannelFieldValue' is not a subtype of type 'FieldValuePlatform' if we don't specify this line.
+  cloud_firestore: 0.13.4 # https://github.com/FirebaseExtended/flutterfire/issues/2087
+
+  # Architecture
   provider: ^4.0.4
   equatable: ^1.1.0
   rxdart: ^0.23.1
