@@ -30,7 +30,7 @@ class RoomListPage extends StatelessWidget {
   }
 
   Future<void> _createRoom(BuildContext context) async {
-    final RoomBloc bloc = Provider.of<RoomBloc>(context);
+    final RoomBloc bloc = Provider.of<RoomBloc>(context, listen: false);
     bloc.addRoom.add(const Room(
       owner: Player(name: 'owner'), // TODO(noboru-i): implement later.
       isOwnerFirstMove: true,
