@@ -1,22 +1,11 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'player.freezed.dart';
 part 'player.g.dart';
 
-@immutable
-@JsonSerializable()
-class Player extends Equatable {
-  const Player({
-    this.name,
-  });
-
+@freezed
+abstract class Player with _$Player {
+  const factory Player({String name}) = _Player;
   factory Player.fromJson(Map<String, dynamic> json) => _$PlayerFromJson(json);
-
-  Map<String, dynamic> toJson() => _$PlayerToJson(this);
-
-  final String name;
-
-  @override
-  List<Object> get props => <dynamic>[name];
 }

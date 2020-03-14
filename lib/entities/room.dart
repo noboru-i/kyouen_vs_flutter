@@ -1,81 +1,50 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:kyouen_vs_flutter/entities/player.dart';
 import 'package:meta/meta.dart';
 
+part 'room.freezed.dart';
 part 'room.g.dart';
 
-@immutable
-@JsonSerializable()
-class Room extends Equatable {
-  const Room({
-    @required this.owner,
-    @required this.isOwnerFirstMove,
-    @required this.size,
-    this.attendee,
-    this.createdAt,
-  });
+// TODO(noboru-i): remove dependency to firestore
+DateTime dateTimeFromTimestamp(Timestamp timestamp) =>
+    timestamp == null ? null : timestamp.toDate();
+
+@freezed
+abstract class Room with _$Room {
+  const factory Room({
+    @required Player owner,
+    @required bool isOwnerFirstMove,
+    @required int size,
+    Player attendee,
+    @JsonKey(fromJson: dateTimeFromTimestamp) DateTime createdAt,
+  }) = _Room;
 
   factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
-
-  Map<String, dynamic> toJson() => _$RoomToJson(this);
-
-  final Player owner;
-
-  final bool isOwnerFirstMove;
-
-  final int size;
-
-  final Player attendee;
-
-  @JsonKey(fromJson: _dateTimeFromTimestamp)
-  final DateTime createdAt;
-
-  @override
-  List<Object> get props =>
-      <dynamic>[owner, isOwnerFirstMove, size, attendee, createdAt];
-
-  // TODO(noboru-i): remove dependency to firestore
-  static DateTime _dateTimeFromTimestamp(Timestamp timestamp) =>
-      timestamp == null ? null : timestamp.toDate();
 }
 
-@immutable
-class RoomDocument extends Equatable {
-  const RoomDocument({
-    this.id,
-    this.room,
-  });
-
-  final String id;
-  final Room room;
-
-  @override
-  List<Object> get props => <dynamic>[id, room];
+@freezed
+abstract class RoomDocument with _$RoomDocument {
+  const factory RoomDocument({
+    String id,
+    Room room,
+  }) = _RoomDocument;
 }
 
-@immutable
-@JsonSerializable()
-class Point extends Equatable {
-  const Point({
-    this.x,
-    this.y,
-  });
+@freezed
+abstract class Point with _$Point {
+  const factory Point({
+    int x,
+    int y,
+  }) = _Point;
 
-  const Point.fromIndex(int size, int index)
-      : x = index % size,
-        y = index ~/ size;
+  factory Point.fromIndex(int size, int index) {
+    return Point(x: index % size, y: index ~/ size);
+  }
 
   factory Point.fromJson(Map<String, dynamic> json) => _$PointFromJson(json);
-
-  Map<String, dynamic> toJson() => _$PointToJson(this);
-
-  final int x;
-  final int y;
-
-  @override
-  List<Object> get props => <dynamic>[x, y];
 }
 
 enum StoneState {

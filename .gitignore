@@ -42,3 +42,4 @@ ios/Runner/GoogleService-Info.plist
 
 # Generated code
 **/*.g.dart
+**/*.freezed.dart
