@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kyouen_vs_flutter/blocs/room_bloc.dart';
 import 'package:kyouen_vs_flutter/entities/player.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
+import 'package:kyouen_vs_flutter/models/room_model.dart';
 import 'package:kyouen_vs_flutter/pages/kyouen/kyouen_page.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_item.dart';
+import 'package:kyouen_vs_flutter/repositories/room_repository.dart';
 import 'package:provider/provider.dart';
 
 class RoomListPage extends StatelessWidget {
@@ -11,9 +12,8 @@ class RoomListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<RoomBloc>(
-      create: (_) => RoomBloc(),
-      dispose: (_, RoomBloc bloc) => bloc.dispose(),
+    return ChangeNotifierProvider<RoomModel>(
+      create: (_) => RoomModel(RoomRepository.instance),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Room list'),
@@ -30,8 +30,8 @@ class RoomListPage extends StatelessWidget {
   }
 
   Future<void> _createRoom(BuildContext context) async {
-    final RoomBloc bloc = Provider.of<RoomBloc>(context, listen: false);
-    bloc.addRoom.add(const Room(
+    final RoomModel model = Provider.of<RoomModel>(context, listen: false);
+    model.addRoom(const Room(
       owner: Player(name: 'owner'), // TODO(noboru-i): implement later.
       isOwnerFirstMove: true,
       size: 6,
@@ -42,31 +42,21 @@ class RoomListPage extends StatelessWidget {
 class RoomListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final RoomBloc bloc = Provider.of<RoomBloc>(context);
-    return StreamBuilder<List<RoomDocument>>(
-      stream: bloc.roomList,
-      builder:
-          (BuildContext context, AsyncSnapshot<List<RoomDocument>> snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('Loading...');
-        }
-        if (snapshot.data.isEmpty) {
-          return const Text('There is no rooms.');
-        }
-
-        return ListView.builder(
-          itemBuilder: (BuildContext context, int index) {
-            final RoomDocument roomDocument = snapshot.data[index];
-            return RoomListItem(
-              room: roomDocument.room,
-              onTap: () => _onTapItem(context, roomDocument.id),
-            );
-          },
-          itemCount: snapshot.data.length,
-        );
+    return Consumer<RoomModel>(
+      builder: (BuildContext context, RoomModel model, _) {
+        return model.value.when(
+            (RoomList value) => ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    final RoomDocument roomDocument = value.data[index];
+                    return RoomListItem(
+                      room: roomDocument.room,
+                      onTap: () => _onTapItem(context, roomDocument.id),
+                    );
+                  },
+                  itemCount: value.data.length,
+                ),
+            loading: () => const Text('Loading...'),
+            error: (String error) => Text('Error: $error'));
       },
     );
   }

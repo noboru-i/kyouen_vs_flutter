@@ -13,6 +13,13 @@ DateTime dateTimeFromTimestamp(Timestamp timestamp) =>
     timestamp == null ? null : timestamp.toDate();
 
 @freezed
+abstract class RoomList with _$RoomList {
+  const factory RoomList({
+    List<RoomDocument> data,
+  }) = _RoomList;
+}
+
+@freezed
 abstract class Room with _$Room {
   const factory Room({
     @required Player owner,
