@@ -6,19 +6,19 @@ import 'package:kyouen_vs_flutter/entities/room.dart';
 import 'package:kyouen_vs_flutter/repositories/room_repository.dart';
 
 class RoomListController extends ValueNotifier<Resource<RoomList>> {
-  RoomListController(this.roomRepository)
-      : assert(roomRepository != null),
+  RoomListController(this._roomRepository)
+      : assert(_roomRepository != null),
         super(const Resource<RoomList>.loading()) {
     _subscribe();
   }
 
-  final RoomRepository roomRepository;
+  final RoomRepository _roomRepository;
 
   StreamSubscription<List<RoomDocument>> _subscription;
 
   Future<void> _subscribe() async {
     _subscription =
-        roomRepository.fetchRooms().listen((List<RoomDocument> data) {
+        _roomRepository.fetchRooms().listen((List<RoomDocument> data) {
       value = Resource<RoomList>(RoomList(data: data));
     }, onError: (dynamic error) {
       // TODO(noboru-i): dynamic is really ok?
@@ -27,7 +27,7 @@ class RoomListController extends ValueNotifier<Resource<RoomList>> {
   }
 
   Future<void> addRoom(Room room) async {
-    await roomRepository.addRoom(room);
+    await _roomRepository.addRoom(room);
   }
 
   @override

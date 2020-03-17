@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kyouen_vs_flutter/blocs/kyouen_bloc.dart';
 import 'package:kyouen_vs_flutter/entities/player.dart';
+import 'package:kyouen_vs_flutter/entities/resource.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
+import 'package:kyouen_vs_flutter/pages/kyouen/kyouen_controller.dart';
 import 'package:kyouen_vs_flutter/pages/kyouen/stone_view.dart';
+import 'package:kyouen_vs_flutter/repositories/room_repository.dart';
 import 'package:provider/provider.dart';
 
 @immutable
@@ -21,35 +23,37 @@ class KyouenPage extends StatelessWidget {
         ModalRoute.of(context).settings.arguments as KyouenPageArguments;
     final String roomId = args.roomId;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Kyouen'),
-      ),
-      body: Provider<KyouenBloc>(
-        create: (_) => KyouenBloc(roomId),
-        dispose: (_, KyouenBloc bloc) => bloc.dispose(),
-        child: Builder(
+    return ChangeNotifierProvider<KyouenController>(
+      create: (_) => KyouenController(RoomRepository.instance, roomId),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Kyouen'),
+        ),
+        body: Builder(
           builder: (BuildContext context) {
-            return StreamBuilder<RoomDocument>(
-                stream: Provider.of<KyouenBloc>(context).room,
-                builder: (BuildContext context,
-                    AsyncSnapshot<RoomDocument> snapshot) {
-                  if (snapshot.connectionState != ConnectionState.active) {
-                    return const Text('please wait...');
-                  }
-                  final Room room = snapshot.data.room;
-                  return Column(
+            return Selector<KyouenController, Resource<RoomDocument>>(
+              selector: (_, KyouenController controller) {
+                return controller.value.roomDocumentResource;
+              },
+              builder: (BuildContext context,
+                  Resource<RoomDocument> roomDocumentResource, _) {
+                return roomDocumentResource.when(
+                  (RoomDocument roomDocument) => Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       _PlayerContainerView(
-                        room: room,
+                        room: roomDocument.room,
                       ),
                       _KyouenView(
-                        room: room,
+                        room: roomDocument.room,
                       ),
                     ],
-                  );
-                });
+                  ),
+                  loading: () => const Text('please wait...'),
+                  error: (String error) => Text('Error: $error'),
+                );
+              },
+            );
           },
         ),
       ),
@@ -104,30 +108,32 @@ class _KyouenView extends StatelessWidget {
       aspectRatio: 1.0,
       child: Container(
         color: Colors.green,
-        child: StreamBuilder<List<Point>>(
-          stream: Provider.of<KyouenBloc>(context).points,
-          builder: (BuildContext context, AsyncSnapshot<List<Point>> snapshot) {
-            if (snapshot.connectionState != ConnectionState.active) {
-              return Container();
-            }
+        child: Selector<KyouenController, Resource<List<Point>>>(
+          selector: (_, KyouenController controller) {
+            return controller.value.pointsResource;
+          },
+          builder:
+              (BuildContext context, Resource<List<Point>> pointsResource, _) {
+            return pointsResource.when(
+              (List<Point> points) => GridView.builder(
+                itemCount: room.size * room.size,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: room.size,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  final Point indexPoint = Point.fromIndex(room.size, index);
+                  final bool hasStone = points.contains(indexPoint);
+                  final StoneState state =
+                      hasStone ? StoneState.black : StoneState.none;
 
-            final List<Point> points = snapshot.data ?? <Point>[];
-            return GridView.builder(
-              itemCount: room.size * room.size,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: room.size,
+                  return StoneView(
+                    state: state,
+                    onTap: () => _onTapStone(context, index, state),
+                  );
+                },
               ),
-              itemBuilder: (BuildContext context, int index) {
-                final Point indexPoint = Point.fromIndex(room.size, index);
-                final bool hasStone = points.contains(indexPoint);
-                final StoneState state =
-                    hasStone ? StoneState.black : StoneState.none;
-
-                return StoneView(
-                  state: state,
-                  onTap: () => _onTapStone(context, index, state),
-                );
-              },
+              loading: () => Container(),
+              error: (String error) => Container(),
             );
           },
         ),
@@ -141,11 +147,11 @@ class _KyouenView extends StatelessWidget {
       return;
     }
 
-    final KyouenBloc bloc = Provider.of<KyouenBloc>(context, listen: false);
-
-    bloc.putStone.add(Point.fromIndex(
-      room.size,
-      index,
-    ));
+    Provider.of<KyouenController>(context, listen: false).putStone(
+      Point.fromIndex(
+        room.size,
+        index,
+      ),
+    );
   }
 }
