@@ -5,8 +5,8 @@ import 'package:kyouen_vs_flutter/entities/resource.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
 import 'package:kyouen_vs_flutter/repositories/room_repository.dart';
 
-class RoomModel extends ValueNotifier<Resource<RoomList>> {
-  RoomModel(this.roomRepository)
+class RoomListController extends ValueNotifier<Resource<RoomList>> {
+  RoomListController(this.roomRepository)
       : assert(roomRepository != null),
         super(const Resource<RoomList>.loading()) {
     _subscribe();
