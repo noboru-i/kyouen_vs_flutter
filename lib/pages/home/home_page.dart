@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kyouen_vs_flutter/entities/login_user.dart';
 import 'package:kyouen_vs_flutter/entities/resource.dart';
 import 'package:kyouen_vs_flutter/models/login_controller.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_page.dart';

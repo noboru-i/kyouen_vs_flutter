@@ -3,18 +3,9 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:kyouen_vs_flutter/entities/login_user.dart';
 import 'package:kyouen_vs_flutter/entities/resource.dart';
 import 'package:kyouen_vs_flutter/repositories/login_repository.dart';
-
-part 'login_controller.freezed.dart';
-
-@freezed
-abstract class LoginUser with _$LoginUser {
-  const factory LoginUser({
-    @required String name,
-  }) = _LoginUser;
-}
 
 class LoginController extends ValueNotifier<Resource<LoginUser>> {
   LoginController(this._loginRepository)
@@ -36,7 +27,7 @@ class LoginController extends ValueNotifier<Resource<LoginUser>> {
       return;
     }
     // TODO(noboru-i): we need to add more variables.
-    value = Resource<LoginUser>(LoginUser(name: firebaseUser.uid));
+    value = Resource<LoginUser>(LoginUser.fromFirebaseUser(firebaseUser));
   }
 
   Future<void> signInAnonymously() async {

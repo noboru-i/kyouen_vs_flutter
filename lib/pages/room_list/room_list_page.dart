@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kyouen_vs_flutter/entities/login_user.dart';
 import 'package:kyouen_vs_flutter/entities/player.dart';
+import 'package:kyouen_vs_flutter/entities/resource.dart';
 import 'package:kyouen_vs_flutter/entities/room.dart';
+import 'package:kyouen_vs_flutter/models/login_controller.dart';
 import 'package:kyouen_vs_flutter/pages/kyouen/kyouen_page.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_controller.dart';
 import 'package:kyouen_vs_flutter/pages/room_list/room_list_item.dart';
@@ -30,9 +33,14 @@ class RoomListPage extends StatelessWidget {
   }
 
   Future<void> _createRoom(BuildContext context) async {
+    final Player player =
+        Provider.of<LoginController>(context, listen: false).value.maybeMap(
+              (Data<LoginUser> v) => Player.fromLoginUser(v.value),
+              orElse: () => null,
+            );
     Provider.of<RoomListController>(context, listen: false).addRoom(
-      const Room(
-        owner: Player(name: 'owner'), // TODO(noboru-i): implement later.
+      Room(
+        owner: player,
         isOwnerFirstMove: true,
         size: 6,
       ),
