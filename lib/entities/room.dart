@@ -9,24 +9,24 @@ part 'room.freezed.dart';
 part 'room.g.dart';
 
 // TODO(noboru-i): remove dependency to firestore
-DateTime dateTimeFromTimestamp(Timestamp timestamp) =>
-    timestamp == null ? null : timestamp.toDate();
+DateTime? dateTimeFromTimestamp(Timestamp? timestamp) =>
+    timestamp?.toDate();
 
 @freezed
 abstract class RoomList with _$RoomList {
   const factory RoomList({
-    List<RoomDocument> data,
+    required List<RoomDocument> data,
   }) = _RoomList;
 }
 
 @freezed
 abstract class Room with _$Room {
   const factory Room({
-    @required Player owner,
-    @required bool isOwnerFirstMove,
-    @required int size,
-    Player attendee,
-    @JsonKey(fromJson: dateTimeFromTimestamp) DateTime createdAt,
+    required Player owner,
+    required bool isOwnerFirstMove,
+    required int size,
+    Player? attendee,
+    @JsonKey(fromJson: dateTimeFromTimestamp) DateTime? createdAt,
   }) = _Room;
 
   factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
@@ -35,16 +35,16 @@ abstract class Room with _$Room {
 @freezed
 abstract class RoomDocument with _$RoomDocument {
   const factory RoomDocument({
-    String id,
-    Room room,
+    required String id,
+    required Room room,
   }) = _RoomDocument;
 }
 
 @freezed
 abstract class Point with _$Point {
   const factory Point({
-    int x,
-    int y,
+    required int x,
+    required int y,
   }) = _Point;
 
   factory Point.fromIndex(int size, int index) {

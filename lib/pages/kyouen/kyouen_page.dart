@@ -19,9 +19,9 @@ class KyouenPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final KyouenPageArguments args =
-        ModalRoute.of(context).settings.arguments as KyouenPageArguments;
-    final String roomId = args.roomId;
+    final args =
+        ModalRoute.of(context)?.settings.arguments as KyouenPageArguments;
+    final roomId = args.roomId;
 
     return ChangeNotifierProvider<KyouenController>(
       create: (_) => KyouenController(RoomRepository.instance, roomId),
@@ -63,7 +63,7 @@ class KyouenPage extends StatelessWidget {
 
 class _PlayerContainerView extends StatelessWidget {
   const _PlayerContainerView({
-    @required this.room,
+    required this.room,
   });
 
   final Room room;
@@ -83,7 +83,7 @@ class _PlayerContainerView extends StatelessWidget {
 
 class _PlayerView extends StatelessWidget {
   const _PlayerView({
-    @required this.player,
+    required this.player,
   });
 
   final Player player;
@@ -97,7 +97,7 @@ class _PlayerView extends StatelessWidget {
 
 class _KyouenView extends StatelessWidget {
   const _KyouenView({
-    @required this.room,
+    required this.room,
   });
 
   final Room room;

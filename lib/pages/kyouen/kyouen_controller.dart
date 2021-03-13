@@ -12,8 +12,8 @@ part 'kyouen_controller.freezed.dart';
 @freezed
 abstract class KyouenRoom with _$KyouenRoom {
   const factory KyouenRoom({
-    @required Resource<RoomDocument> roomDocumentResource,
-    @required Resource<List<Point>> pointsResource,
+    required Resource<RoomDocument> roomDocumentResource,
+    required Resource<List<Point>> pointsResource,
   }) = _KyouenRoom;
 }
 
@@ -32,8 +32,8 @@ class KyouenController extends ValueNotifier<KyouenRoom> {
   final RoomRepository _roomRepository;
   final String _roomId;
 
-  StreamSubscription<RoomDocument> _roomSubscription;
-  StreamSubscription<List<Point>> _pointsSubscription;
+  StreamSubscription<RoomDocument>? _roomSubscription;
+  StreamSubscription<List<Point>>? _pointsSubscription;
 
   Future<void> _subscribe(String roomId) async {
     _roomSubscription = _roomRepository.fetch(roomId).listen(

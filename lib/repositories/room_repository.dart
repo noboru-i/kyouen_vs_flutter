@@ -7,29 +7,29 @@ class RoomRepository {
   static final RoomRepository instance = RoomRepository();
 
   Future<void> addRoom(Room room) async {
-    final Map<String, dynamic> map = room.toJson()
+    final map = room.toJson()
       ..addAll(<String, dynamic>{
         'created_at': FieldValue.serverTimestamp(),
       });
 
-    await Firestore.instance.collection('rooms').document().setData(map);
+    await FirebaseFirestore.instance.collection('rooms').doc().set(map);
   }
 
   Stream<RoomDocument> fetch(String roomId) {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('rooms')
-        .document(roomId)
+        .doc(roomId)
         .snapshots()
         .asyncMap((DocumentSnapshot snapshot) {
       return RoomDocument(
-        id: snapshot.documentID,
-        room: Room.fromJson(snapshot.data),
+        id: snapshot.id,
+        room: Room.fromJson(snapshot.data()!),
       );
     });
   }
 
   Stream<List<RoomDocument>> fetchRooms() {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('rooms')
         .orderBy(
           'created_at',
@@ -37,34 +37,39 @@ class RoomRepository {
         )
         .snapshots()
         .asyncMap((QuerySnapshot snapshot) {
-      return snapshot.documents.map((DocumentSnapshot doc) {
-        return RoomDocument(id: doc.documentID, room: Room.fromJson(doc.data));
+      return snapshot.docs.map((DocumentSnapshot snapshot) {
+        return RoomDocument(
+          id: snapshot.id,
+          // TODO(noboru-i): Check it later about "!".
+          room: Room.fromJson(snapshot.data()!),
+        );
       }).toList();
     });
   }
 
   Stream<List<Point>> fetchStones(String roomId) {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('rooms')
-        .document(roomId)
+        .doc(roomId)
         .collection('points')
         .snapshots()
         .asyncMap((QuerySnapshot snapshot) {
-      return snapshot.documents.map((DocumentSnapshot doc) {
-        return Point.fromJson(doc.data);
+      return snapshot.docs.map((DocumentSnapshot snapshot) {
+        // TODO(noboru-i): Check it later about "!".
+        return Point.fromJson(snapshot.data()!);
       }).toList();
     });
   }
 
   void putStone(String roomId, Point point) {
-    final Map<String, dynamic> map = point.toJson()
+    final map = point.toJson()
       ..addAll(<String, dynamic>{
         'created_at': FieldValue.serverTimestamp(),
       });
 
-    Firestore.instance
+    FirebaseFirestore.instance
         .collection('rooms')
-        .document(roomId)
+        .doc(roomId)
         .collection('points')
         .add(map);
   }

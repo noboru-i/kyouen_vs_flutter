@@ -4,8 +4,8 @@ import 'package:kyouen_vs_flutter/entities/room.dart';
 @immutable
 class StoneView extends StatelessWidget {
   const StoneView({
-    @required this.state,
-    @required this.onTap,
+    required this.state,
+    required this.onTap,
   });
 
   final StoneState state;
