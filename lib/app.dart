@@ -16,27 +16,24 @@ class _AppState extends State<App> {
   bool _initialized = false;
   bool _error = false;
 
-  void initializeFlutterFire() async {
-    try {
-      await Firebase.initializeApp();
-      setState(() {
-        _initialized = true;
-      });
-    } on dynamic catch(e) {
-      setState(() {
-        _error = true;
-      });
-    }
-  }
-
   @override
   void initState() {
-    initializeFlutterFire();
+    _initializeFlutterFire();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_error) {
+      return const Text('error');
+    }
+
+    if (!_initialized) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     return ChangeNotifierProvider<LoginController>(
       create: (_) => LoginController(LoginRepository.instance),
       child: MaterialApp(
@@ -52,5 +49,19 @@ class _AppState extends State<App> {
         },
       ),
     );
+  }
+
+  Future<void> _initializeFlutterFire() async {
+    try {
+      await Firebase.initializeApp();
+      setState(() {
+        _initialized = true;
+      });
+    } on Exception catch (e) {
+      print(e);
+      setState(() {
+        _error = true;
+      });
+    }
   }
 }
