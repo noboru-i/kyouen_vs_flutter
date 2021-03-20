@@ -4,8 +4,8 @@ import 'package:kyouen_vs_flutter/entities/room.dart';
 @immutable
 class RoomListItem extends StatelessWidget {
   const RoomListItem({
-    @required this.room,
-    @required this.onTap,
+    required this.room,
+    required this.onTap,
   });
 
   final Room room;

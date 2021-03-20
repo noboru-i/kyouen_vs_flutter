@@ -12,25 +12,24 @@ part 'login_controller.freezed.dart';
 @freezed
 abstract class LoginUser with _$LoginUser {
   const factory LoginUser({
-    @required String name,
+    required String name,
   }) = _LoginUser;
 }
 
 class LoginController extends ValueNotifier<Resource<LoginUser>> {
   LoginController(this._loginRepository)
-      : assert(_loginRepository != null),
-        super(const Resource<LoginUser>.loading()) {
+      : super(const Resource<LoginUser>.loading()) {
     _initialFetch();
   }
 
   final LoginRepository _loginRepository;
 
   Future<void> _initialFetch() async {
-    final FirebaseUser currentUser = await _loginRepository.currentUser();
+    final currentUser = await _loginRepository.currentUser();
     _updateLoginUserState(currentUser);
   }
 
-  void _updateLoginUserState(FirebaseUser firebaseUser) {
+  void _updateLoginUserState(User? firebaseUser) {
     if (firebaseUser == null) {
       value = const Resource<LoginUser>.error('not logged in');
       return;
@@ -40,8 +39,7 @@ class LoginController extends ValueNotifier<Resource<LoginUser>> {
   }
 
   Future<void> signInAnonymously() async {
-    final FirebaseUser firebaseUser =
-        await _loginRepository.signInAnonymously();
+    final firebaseUser = await _loginRepository.signInAnonymously();
     _updateLoginUserState(firebaseUser);
   }
 }

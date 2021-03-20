@@ -6,17 +6,17 @@ import 'package:kyouen_vs_flutter/entities/room.dart';
 import 'package:kyouen_vs_flutter/repositories/room_repository.dart';
 
 class RoomListController extends ValueNotifier<Resource<RoomList>> {
-  RoomListController(this._roomRepository)
-      : assert(_roomRepository != null),
-        super(const Resource<RoomList>.loading()) {
+  RoomListController(
+    this._roomRepository,
+  ) : super(const Resource<RoomList>.loading()) {
     _subscribe();
   }
 
   final RoomRepository _roomRepository;
 
-  StreamSubscription<List<RoomDocument>> _subscription;
+  StreamSubscription<List<RoomDocument>>? _subscription;
 
-  Future<void> _subscribe() async {
+  void _subscribe() {
     _subscription =
         _roomRepository.fetchRooms().listen((List<RoomDocument> data) {
       value = Resource<RoomList>(RoomList(data: data));
