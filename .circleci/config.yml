@@ -81,9 +81,6 @@ commands:
   install_ruby_gems:
     steps:
       - run:
-          name: Set ruby version
-          command: echo "ruby-2.6.3" > ~/.ruby-version
-      - run:
           name: Run bundle install
           command: bundle install --path vendor/bundle
       # TODO store and restore `vendor/bundle` cache
