@@ -17,14 +17,18 @@ executors:
       xcode: "11.3.1"
 
 commands:
-  decrypt_files:
+  download_config:
     steps:
       - run:
-          name: Decrypt android files
-          command: openssl aes-256-cbc -k $DECRYPT_KEY -d -in android/app/google-services.encrypted.json -out android/app/google-services.json -md sha256
+          name: Install Firebase CLI
+          command: curl -sL https://firebase.tools | bash
       - run:
-          name: Decrypt ios files
-          command: openssl aes-256-cbc -k $DECRYPT_KEY -d -in ios/Runner/GoogleService-Info.encrypted.plist -out ios/Runner/GoogleService-Info.plist -md sha256
+          name: Download configs
+          command: |
+            firebase apps:sdkconfig --project kyouen-vs-dev ANDROID -o android/app/firebase/google-services-dev.json
+            firebase apps:sdkconfig --project kyouen-vs-dev IOS -o ios/Runner/Firebase/GoogleService-Info-Dev.plist
+            firebase apps:sdkconfig --project kyouen-vs ANDROID -o android/app/firebase/google-services-prod.json
+            firebase apps:sdkconfig --project kyouen-vs IOS -o ios/Runner/Firebase/GoogleService-Info-Prod.plist
   run_build_runner:
     steps:
       - run:
@@ -107,7 +111,7 @@ jobs:
     executor: default_android
     steps:
       - checkout
-      - decrypt_files
+      - download_config
       - run_build_runner
       - flutter_analyze
       - install_ruby_gems
@@ -116,7 +120,7 @@ jobs:
     executor: default_android
     steps:
       - checkout
-      - decrypt_files
+      - download_config
       - run_build_runner
       - build_apk
       - deploy_to_deploygate
@@ -124,7 +128,7 @@ jobs:
     executor: default_ios
     steps:
       - checkout
-      - decrypt_files
+      - download_config
       - install_flutter
       - install_ruby_gems
       - run_build_runner
