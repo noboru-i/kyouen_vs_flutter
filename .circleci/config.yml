@@ -57,7 +57,7 @@ commands:
     steps:
       - run:
           name: Build apk
-          command: $FLUTTER_HOME/bin/flutter build apk --release
+          command: $FLUTTER_HOME/bin/flutter build apk --release --dart-define=BUNDLE_ID_SUFFIX=.dev --dart-define=DISPLAY_NAME_PREFIX="DEV " --dart-define=BUILD_ENV=dev
   deploy_to_deploygate:
     steps:
       - run:
@@ -69,6 +69,13 @@ commands:
               -F "file=@build/app/outputs/apk/release/app-release.apk" \
               -F "message=${DEPLOYGATE_MESSAGE}" \
               https://deploygate.com/api/users/${DEPLOYGATE_USER_NAME}/apps
+  deploy_android_to_firebase:
+    steps:
+      - run:
+          name: Deploy to Firebase App Distribution
+          command: |
+            APP_ID=`cat android/app/firebase/google-services-dev.json | grep "mobilesdk_app_id" | sed -e "s/^.*\"mobilesdk_app_id\": \"\([0-9a-zA-Z:]*\)\",$/\1/g"`
+            firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app $APP_ID
 
   install_flutter:
     steps:
@@ -123,7 +130,7 @@ jobs:
       - download_config
       - run_build_runner
       - build_apk
-      - deploy_to_deploygate
+      - deploy_android_to_firebase
   build_ios:
     executor: default_ios
     steps:
@@ -144,7 +151,7 @@ workflows:
       - build_android:
           filters:
             branches:
-              only: master
+              only: improve-ci # TODO "master"
       - build_ios:
           filters:
             branches:
