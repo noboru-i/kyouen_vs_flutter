@@ -38,6 +38,7 @@ lib/generated_plugin_registrant.dart
 
 # Secret file
 android/app/google-services.json
+android/app/firebase/
 ios/Runner/GoogleService-Info.plist
 ios/Runner/Firebase/
 
