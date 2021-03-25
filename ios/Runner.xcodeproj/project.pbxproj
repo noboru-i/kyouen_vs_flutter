@@ -13,6 +13,8 @@
 		51DFBCA6260631D9009959A2 /* GoogleService-Info-Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51DFBCA5260631D9009959A2 /* GoogleService-Info-Dev.plist */; };
 		51DFBCA8260631E2009959A2 /* GoogleService-Info-Prod.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51DFBCA7260631E2009959A2 /* GoogleService-Info-Prod.plist */; };
 		51DFBCAA26063468009959A2 /* kyouenvsflutter-defaults.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 51DFBCA926063468009959A2 /* kyouenvsflutter-defaults.xcconfig */; };
+		51DFBCE0260CD573009959A2 /* Dev.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 51DFBCDF260CD573009959A2 /* Dev.xcconfig */; };
+		51DFBCE2260CD5EB009959A2 /* Prod.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 51DFBCE1260CD5EB009959A2 /* Prod.xcconfig */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -41,6 +43,8 @@
 		51DFBCA5260631D9009959A2 /* GoogleService-Info-Dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Dev.plist"; sourceTree = "<group>"; };
 		51DFBCA7260631E2009959A2 /* GoogleService-Info-Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Prod.plist"; sourceTree = "<group>"; };
 		51DFBCA926063468009959A2 /* kyouenvsflutter-defaults.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "kyouenvsflutter-defaults.xcconfig"; path = "Flutter/kyouenvsflutter-defaults.xcconfig"; sourceTree = "<group>"; };
+		51DFBCDF260CD573009959A2 /* Dev.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Dev.xcconfig; path = Flutter/Dev.xcconfig; sourceTree = "<group>"; };
+		51DFBCE1260CD5EB009959A2 /* Prod.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Prod.xcconfig; path = Flutter/Prod.xcconfig; sourceTree = "<group>"; };
 		60F6505380230FCA1D70DDF0 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -94,6 +98,8 @@
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
 				9740EEB31CF90195004384FC /* Generated.xcconfig */,
 				51DFBCA926063468009959A2 /* kyouenvsflutter-defaults.xcconfig */,
+				51DFBCDF260CD573009959A2 /* Dev.xcconfig */,
+				51DFBCE1260CD5EB009959A2 /* Prod.xcconfig */,
 			);
 			name = Flutter;
 			sourceTree = "<group>";
@@ -215,7 +221,9 @@
 				51DFBCA8260631E2009959A2 /* GoogleService-Info-Prod.plist in Resources */,
 				51DFBCAA26063468009959A2 /* kyouenvsflutter-defaults.xcconfig in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
+				51DFBCE2260CD5EB009959A2 /* Prod.xcconfig in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				51DFBCE0260CD573009959A2 /* Dev.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

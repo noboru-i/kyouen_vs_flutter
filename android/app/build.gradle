@@ -22,10 +22,9 @@ if (flutterVersionName == null) {
 }
 
 def dartEnvironmentVariables = [
-        BUNDLE_ID_SUFFIX: null,
-        DISPLAY_NAME_PREFIX: null,
         BUILD_ENV: ''
 ];
+def appProperties = new Properties()
 if (project.hasProperty('dart-defines')) {
     dartEnvironmentVariables = dartEnvironmentVariables + project.property('dart-defines')
             .split(',')
@@ -33,6 +32,9 @@ if (project.hasProperty('dart-defines')) {
                 def pair = URLDecoder.decode(entry).split('=')
                 [(pair.first()): pair.last()]
             }
+    file("env/${dartEnvironmentVariables.BUILD_ENV}.properties").withReader('UTF-8') { reader ->
+        appProperties.load(reader)
+    }
 }
 
 task copyGoogleServicesJson(type: Copy) {
@@ -65,14 +67,14 @@ android {
 
     defaultConfig {
         applicationId "hm.orz.chaos114.kyouen_vs_flutter"
-        applicationIdSuffix dartEnvironmentVariables.BUNDLE_ID_SUFFIX
+        applicationIdSuffix appProperties.APPLICATION_ID_SUFFIX
         minSdkVersion 21
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
         manifestPlaceholders = [
-                displayNamePrefix: dartEnvironmentVariables.DISPLAY_NAME_PREFIX ?: ''
+                displayNamePrefix: appProperties.APP_NAME_PREFIX ?: ''
         ]
     }
 

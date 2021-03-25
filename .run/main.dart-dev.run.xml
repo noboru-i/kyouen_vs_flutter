@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="main.dart-dev" type="FlutterRunConfigurationType" factoryName="Flutter">
-    <option name="additionalArgs" value="--dart-define=BUNDLE_ID_SUFFIX=.dev --dart-define=DISPLAY_NAME_PREFIX=&quot;DEV &quot; --dart-define=BUILD_ENV=dev" />
+    <option name="additionalArgs" value="--dart-define=BUILD_ENV=dev" />
     <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
     <method v="2" />
   </configuration>
