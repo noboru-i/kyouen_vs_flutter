@@ -23,7 +23,7 @@ class RoomRepository {
         .asyncMap((DocumentSnapshot snapshot) {
       return RoomDocument(
         id: snapshot.id,
-        room: Room.fromJson(snapshot.data()!),
+        room: Room.fromJson(snapshot.data() as Map<String, dynamic>),
       );
     });
   }
@@ -41,7 +41,7 @@ class RoomRepository {
         return RoomDocument(
           id: snapshot.id,
           // TODO(noboru-i): Check it later about "!".
-          room: Room.fromJson(snapshot.data()!),
+          room: Room.fromJson(snapshot.data() as Map<String, dynamic>),
         );
       }).toList();
     });
@@ -56,7 +56,7 @@ class RoomRepository {
         .asyncMap((QuerySnapshot snapshot) {
       return snapshot.docs.map((DocumentSnapshot snapshot) {
         // TODO(noboru-i): Check it later about "!".
-        return Point.fromJson(snapshot.data()!);
+        return Point.fromJson(snapshot.data() as Map<String, dynamic>);
       }).toList();
     });
   }

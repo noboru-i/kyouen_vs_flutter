@@ -58,7 +58,7 @@ commands:
     steps:
       - run:
           name: Build apk
-          command: $FLUTTER_HOME/bin/flutter build apk --release --dart-define=BUNDLE_ID_SUFFIX=.dev --dart-define=DISPLAY_NAME_PREFIX="DEV " --dart-define=BUILD_ENV=dev
+          command: $FLUTTER_HOME/bin/flutter build apk --release --dart-define=BUILD_ENV=dev
   deploy_android_to_firebase:
     steps:
       - run:
@@ -92,7 +92,7 @@ commands:
     steps:
       - run:
           name: Build flutter app
-          command: $FLUTTER_HOME/bin/flutter build ios --release --no-codesign
+          command: $FLUTTER_HOME/bin/flutter build ios --release --no-codesign --dart-define=BUILD_ENV=dev
       - run:
           name: Sign ipa
           command: bundle exec fastlane sign_ipa
@@ -142,4 +142,4 @@ workflows:
       - build_ios:
           filters:
             branches:
-              only: master
+              only: improve-ci # TODO "master"
