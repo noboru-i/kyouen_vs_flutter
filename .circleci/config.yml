@@ -87,6 +87,12 @@ commands:
       - run:
           name: Run bundle install
           command: bundle install
+  install_ruby_gems_ios:
+    steps:
+      - run:
+          name: Run bundle install
+          command: bundle install
+          working_directory: ~/project/ios
 
   build_ipa:
     steps:
@@ -127,6 +133,7 @@ jobs:
       - install_flutter
       - install_ruby_gems
       - run_build_runner
+      - install_ruby_gems_ios
       - build_ipa
 
 workflows:
