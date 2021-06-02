@@ -34,7 +34,7 @@ platform :ios do
   end
 
   desc "Install Code Signing Credentials"
-  private_lane :setup_provisioning_profiles do |options|
+  lane :setup_provisioning_profiles do |options|
     next unless Helper.ci?
 
     `curl -OL https://developer.apple.com/certificationauthority/AppleWWDRCA.cer`

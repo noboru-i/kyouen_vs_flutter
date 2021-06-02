@@ -21,6 +21,11 @@ or alternatively using `brew install fastlane`
 fastlane ios sign_ipa
 ```
 Sign app to ipa
+### ios setup_provisioning_profiles
+```
+fastlane ios setup_provisioning_profiles
+```
+Install Code Signing Credentials
 
 ----
 

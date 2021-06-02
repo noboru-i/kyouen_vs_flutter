@@ -91,6 +91,10 @@ commands:
   build_ipa:
     steps:
       - run:
+          name: Install cert
+          command: bundle exec fastlane setup_provisioning_profiles
+          working_directory: ~/project/ios
+      - run:
           name: Build flutter app
           command: $FLUTTER_HOME/bin/flutter build ipa --dart-define=BUILD_ENV=dev --export-options-plist=ios/ExportOptions/dev.plist
 
