@@ -92,11 +92,7 @@ commands:
     steps:
       - run:
           name: Build flutter app
-          command: $FLUTTER_HOME/bin/flutter build ios --release --no-codesign --dart-define=BUILD_ENV=dev
-      - run:
-          name: Sign ipa
-          command: bundle exec fastlane sign_ipa
-          working_directory: ~/project/ios
+          command: $FLUTTER_HOME/bin/flutter build ipa --dart-define=BUILD_ENV=dev --export-options-plist=ios/ExportOptions/dev.plist
 
 jobs:
   lint:
