@@ -6,10 +6,6 @@ BUNDLE_ID = 'hm.orz.chaos114.kyouenVsFlutter.dev'
 PROVISIONING_PROFILE_NAME_DEV = 'wildcard provisioning'
 
 platform :ios do
-  before_all do
-    setup_circle_ci
-  end
-
   desc "Sign app to ipa"
   lane :sign_ipa do |options|
     setup_provisioning_profiles
@@ -36,6 +32,12 @@ platform :ios do
   desc "Install Code Signing Credentials"
   lane :setup_provisioning_profiles do |options|
     next unless Helper.ci?
+    create_keychain(
+      name: 'fastlane_tmp_keychain',
+      password: '',
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600)
 
     `curl -OL https://developer.apple.com/certificationauthority/AppleWWDRCA.cer`
     import_certificate(
