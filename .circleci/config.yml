@@ -102,7 +102,7 @@ commands:
           working_directory: ~/project/ios
       - run:
           name: Build flutter app
-          command: $FLUTTER_HOME/bin/flutter build ipa --dart-define=BUILD_ENV=dev --export-options-plist=ios/ExportOptions/dev.plist
+          command: $FLUTTER_HOME/bin/flutter build ipa --verbose --dart-define=BUILD_ENV=dev --export-options-plist=ios/ExportOptions/dev.plist
           no_output_timeout: 20m
 
 jobs:
