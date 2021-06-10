@@ -14,17 +14,23 @@ executors:
       LANG: en_US.UTF-8
     macos:
       # https://circleci.com/docs/2.0/testing-ios/#supported-xcode-versions
-      xcode: "11.3.1"
+      xcode: "12.5.0"
 
 commands:
-  decrypt_files:
+  install_firebase_cli:
     steps:
       - run:
-          name: Decrypt android files
-          command: openssl aes-256-cbc -k $DECRYPT_KEY -d -in android/app/google-services.encrypted.json -out android/app/google-services.json -md sha256
+          name: Install Firebase CLI
+          command: curl -sL https://firebase.tools | bash
+  download_config:
+    steps:
       - run:
-          name: Decrypt ios files
-          command: openssl aes-256-cbc -k $DECRYPT_KEY -d -in ios/Runner/GoogleService-Info.encrypted.plist -out ios/Runner/GoogleService-Info.plist -md sha256
+          name: Download configs
+          command: |
+            firebase apps:sdkconfig --project kyouen-vs-dev ANDROID -o android/app/firebase/google-services-dev.json
+            firebase apps:sdkconfig --project kyouen-vs-dev IOS -o ios/Runner/Firebase/GoogleService-Info-Dev.plist
+            firebase apps:sdkconfig --project kyouen-vs ANDROID -o android/app/firebase/google-services-prod.json
+            firebase apps:sdkconfig --project kyouen-vs IOS -o ios/Runner/Firebase/GoogleService-Info-Prod.plist
   run_build_runner:
     steps:
       - run:
@@ -36,14 +42,13 @@ commands:
 
   flutter_analyze:
     steps:
-      # TODO maybe we can use result to "Danger".
       - run:
           name: Run flutter analyze
           command: $FLUTTER_HOME/bin/flutter analyze > flutter_analyze_report.txt || true
       - store_artifacts:
           path: flutter_analyze_report.txt
 
-  exec_danger:
+  run_danger:
     steps:
       - run:
           name: Run Danger
@@ -53,18 +58,17 @@ commands:
     steps:
       - run:
           name: Build apk
-          command: $FLUTTER_HOME/bin/flutter build apk --release
-  deploy_to_deploygate:
+          command: $FLUTTER_HOME/bin/flutter build apk --release --dart-define=BUILD_ENV=dev
+  deploy_android_to_firebase:
     steps:
       - run:
-          name: Deploy to DeployGate
+          name: Deploy to Firebase App Distribution
           command: |
-            DEPLOYGATE_MESSAGE="branch: $CIRCLE_BRANCH, hash: `git rev-parse --short HEAD`"
-            curl \
-              -F "token=${DEPLOYGATE_API_TOKEN}" \
-              -F "file=@build/app/outputs/apk/release/app-release.apk" \
-              -F "message=${DEPLOYGATE_MESSAGE}" \
-              https://deploygate.com/api/users/${DEPLOYGATE_USER_NAME}/apps
+            APP_ID=`cat android/app/firebase/google-services-dev.json | grep "mobilesdk_app_id" | sed -e "s/^.*\"mobilesdk_app_id\": \"\([0-9a-zA-Z:]*\)\",$/\1/g"`
+            firebase appdistribution:distribute \
+              build/app/outputs/flutter-apk/app-release.apk \
+              --app $APP_ID \
+              --release-notes "branch: $CIRCLE_BRANCH, hash: `git rev-parse --short HEAD`"
 
   install_flutter:
     steps:
@@ -82,53 +86,55 @@ commands:
     steps:
       - run:
           name: Run bundle install
-          command: bundle install --path vendor/bundle
-      # TODO store and restore `vendor/bundle` cache
-
-  setup_ios_build_setting:
+          command: bundle install
+  install_ruby_gems_ios:
     steps:
       - run:
-          name: Run pod setup
-          command: curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+          name: Run bundle install
+          command: bundle install
           working_directory: ~/project/ios
 
   build_ipa:
     steps:
       - run:
-          name: Build flutter app
-          command: $FLUTTER_HOME/bin/flutter build ios --release --no-codesign
-      - run:
-          name: Sign ipa
-          command: bundle exec fastlane sign_ipa
+          name: Install cert
+          command: bundle exec fastlane setup_provisioning_profiles
           working_directory: ~/project/ios
+      - run:
+          name: Build flutter app
+          command: $FLUTTER_HOME/bin/flutter build ipa --verbose --dart-define=BUILD_ENV=dev --export-options-plist=ios/ExportOptions/dev.plist
+          no_output_timeout: 20m
 
 jobs:
   lint:
     executor: default_android
     steps:
       - checkout
-      - decrypt_files
+      - install_firebase_cli
+      - download_config
       - run_build_runner
       - flutter_analyze
       - install_ruby_gems
-      - exec_danger
+      - run_danger
   build_android:
     executor: default_android
     steps:
       - checkout
-      - decrypt_files
+      - install_firebase_cli
+      - download_config
       - run_build_runner
       - build_apk
-      - deploy_to_deploygate
+      - deploy_android_to_firebase
   build_ios:
     executor: default_ios
     steps:
       - checkout
-      - decrypt_files
+      - install_firebase_cli
+      - download_config
       - install_flutter
       - install_ruby_gems
       - run_build_runner
-      - setup_ios_build_setting
+      - install_ruby_gems_ios
       - build_ipa
 
 workflows:
@@ -140,8 +146,8 @@ workflows:
       - build_android:
           filters:
             branches:
-              only: master
+              only: improve-ci # TODO "master"
       - build_ios:
           filters:
             branches:
-              only: master
+              only: improve-ci # TODO "master"

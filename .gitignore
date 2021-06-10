@@ -38,7 +38,12 @@ lib/generated_plugin_registrant.dart
 
 # Secret file
 android/app/google-services.json
+android/app/firebase/*.json
 ios/Runner/GoogleService-Info.plist
+ios/Runner/Firebase/*.plist
+
+# Config file
+ios/Flutter/kyouenvsflutter.xcconfig
 
 # Generated code
 **/*.g.dart

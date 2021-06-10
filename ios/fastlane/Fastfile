@@ -6,10 +6,6 @@ BUNDLE_ID = 'hm.orz.chaos114.kyouenVsFlutter.dev'
 PROVISIONING_PROFILE_NAME_DEV = 'wildcard provisioning'
 
 platform :ios do
-  before_all do
-    setup_circle_ci
-  end
-
   desc "Sign app to ipa"
   lane :sign_ipa do |options|
     setup_provisioning_profiles
@@ -34,16 +30,24 @@ platform :ios do
   end
 
   desc "Install Code Signing Credentials"
-  private_lane :setup_provisioning_profiles do |options|
+  lane :setup_provisioning_profiles do |options|
     next unless Helper.ci?
+    create_keychain(
+      name: 'fastlane_tmp_keychain',
+      password: '',
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600)
 
     `curl -OL https://developer.apple.com/certificationauthority/AppleWWDRCA.cer`
     import_certificate(
       keychain_name: 'fastlane_tmp_keychain',
+      keychain_password: '',
       certificate_path: 'fastlane/cert/dist.p12',
       certificate_password: ENV['IOS_CERTIFICATES_KEY_PASSWORD'])
     import_certificate(
       keychain_name: 'fastlane_tmp_keychain',
+      keychain_password: '',
       certificate_path: 'fastlane/AppleWWDRCA.cer')
 
     Dir.glob('cert/*.mobileprovision').each {|filename|
